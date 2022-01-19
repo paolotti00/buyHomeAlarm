@@ -35,10 +35,13 @@ def scrape_idealista(soup):
         home_item.origin_site = SITE_NAME_IDEALISTA
         try:
             # decode
-            home_item.title = article.p["title"]
+            # home_item.title = article.find("p", {"class": "item-highlight-phrase"})
+            # home_item.price = article.find("span", {"class": "item-price"}).text
+            home_item.title = article.find("p", {"class": "item-highlight-phrase"})["title"]
+            home_item.price = article.find("span", {"class": "item-price"}).text
             # add element
             homes_to_return.append(home_item)
-        except KeyError:
+        except Exception:
             # do nothing
             continue
     return homes_to_return
@@ -55,3 +58,5 @@ def scrape_data(site_name) -> [Home]:
 
 for home in scrape_data(SITE_NAME_IDEALISTA):
     print(home.title)
+    print(home.price)
+    print("---")
