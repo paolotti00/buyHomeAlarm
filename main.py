@@ -27,7 +27,7 @@ def get_soup(url):
     # resp.html.render()
     # return BeautifulSoup(resp.html.html, "html.parser")
     headers = requests.utils.default_headers()
-    headers.update({'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:52.0) Gecko/20100101 Firefox/52.0', })
+    headers.update({"user-agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:81.0) Gecko/20100101 Firefox/81.0"})
     brainly = requests.get(url, headers=headers)
     return BeautifulSoup(brainly.text, "html5lib")
 
