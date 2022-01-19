@@ -6,11 +6,14 @@ SITE_NAME_IDEALISTA = "IDEALISTA"
 URL_IDEALISTA = "https://www.idealista.it/aree/vendita-case/?shape=%28%28%7Dom%7EFsgpjAyqGa%7B%40enJdPihBquEmkB%7DlPjnEghNdnIgqEpqPhoFdrBtqGeB%60iGkuAxwQ_rG%7EcC%29%29"
 URL_IMMOBILIARE = "https://www.idealista.it/aree/vendita-case/?shape=%28%28%7Dom%7EFsgpjAyqGa%7B%40enJdPihBquEmkB%7DlPjnEghNdnIgqEpqPhoFdrBtqGeB%60iGkuAxwQ_rG%7EcC%29%29"
 
+
 class Home:
-    def __init__(self, zone, price, title):
-        self.zone = zone
-        self.price = price
-        self.title = title
+    title = None
+    price = None
+    zone = None
+    mt2 = None
+    link_detail = None
+    origin_site = None
 
 
 def get_soup(url):
@@ -25,17 +28,30 @@ def scrape_immobiliare(soup):
 
 
 def scrape_idealista(soup):
-    print(soup)
-    home_result = Home
-    return home_result
+    homes_to_return = []
+    articles = soup.findAll("article")
+    for article in articles:
+        home_item: Home = Home()
+        home_item.origin_site = SITE_NAME_IDEALISTA
+        try:
+            # decode
+            home_item.title = article.p["title"]
+            # add element
+            homes_to_return.append(home_item)
+        except KeyError:
+            # do nothing
+            continue
+    return homes_to_return
 
 
-def scrape_data(site_name):
-    home = None
+def scrape_data(site_name) -> [Home]:
+    homes = [Home]
     if site_name == SITE_NAME_IMMOBILIARE:
-        home = scrape_immobiliare(get_soup(URL_IDEALISTA))
+        homes += scrape_immobiliare(get_soup(URL_IMMOBILIARE))
     elif site_name == SITE_NAME_IDEALISTA:
-        home = scrape_idealista(get_soup(URL_IMMOBILIARE))
+        homes += scrape_idealista(get_soup(URL_IDEALISTA))
+    return homes
 
 
-scrape_data(SITE_NAME_IDEALISTA)
+for home in scrape_data(SITE_NAME_IDEALISTA):
+    print(home.title)
