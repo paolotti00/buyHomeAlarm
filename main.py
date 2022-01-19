@@ -1,10 +1,10 @@
 import requests
 from bs4 import BeautifulSoup
-from requests_html import HTMLSession
 
 SITE_NAME_IMMOBILIARE = "IMMOBILIARE"
 SITE_NAME_IDEALISTA = "IDEALISTA"
-
+URL_IDEALISTA = "https://www.idealista.it/aree/vendita-case/?shape=%28%28%7Dom%7EFsgpjAyqGa%7B%40enJdPihBquEmkB%7DlPjnEghNdnIgqEpqPhoFdrBtqGeB%60iGkuAxwQ_rG%7EcC%29%29"
+URL_IMMOBILIARE = "https://www.idealista.it/aree/vendita-case/?shape=%28%28%7Dom%7EFsgpjAyqGa%7B%40enJdPihBquEmkB%7DlPjnEghNdnIgqEpqPhoFdrBtqGeB%60iGkuAxwQ_rG%7EcC%29%29"
 
 class Home:
     def __init__(self, zone, price, title):
@@ -14,22 +14,9 @@ class Home:
 
 
 def get_soup(url):
-    # headers = {
-    #     'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:52.0) Gecko/20100101 Firefox/52.0',
-    # }
-    # # create an HTML Session object
-    # session = HTMLSession()
-    #
-    # # Use the object above to connect to needed webpage
-    # resp = session.get(url, headers=headers)
-    #
-    # # Run JavaScript code on webpage
-    # resp.html.render()
-    # return BeautifulSoup(resp.html.html, "html.parser")
     headers = requests.utils.default_headers()
     headers.update({"user-agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:81.0) Gecko/20100101 Firefox/81.0"})
-    brainly = requests.get(url, headers=headers)
-    return BeautifulSoup(brainly.text, "html5lib")
+    return BeautifulSoup(requests.get(url, headers=headers).text, "html5lib")
 
 
 def scrape_immobiliare(soup):
@@ -38,17 +25,17 @@ def scrape_immobiliare(soup):
 
 
 def scrape_idealista(soup):
+    print(soup)
     home_result = Home
     return home_result
 
 
-def scrape_data(soup, site_name):
+def scrape_data(site_name):
     home = None
     if site_name == SITE_NAME_IMMOBILIARE:
-        home = scrape_immobiliare(soup)
+        home = scrape_immobiliare(get_soup(URL_IDEALISTA))
     elif site_name == SITE_NAME_IDEALISTA:
-        home = scrape_immobiliare(scrape_idealista)
-    print(soup)
+        home = scrape_idealista(get_soup(URL_IMMOBILIARE))
 
 
-scrape_data(get_soup("https://www.idealista.it/"), SITE_NAME_IMMOBILIARE)
+scrape_data(SITE_NAME_IDEALISTA)
