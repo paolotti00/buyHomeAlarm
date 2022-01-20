@@ -43,7 +43,7 @@ def scrape_idealista(soup):
         try:
             # decode
             home_item.id = IDEALISTA_SITE_NAME + "_" + article["data-adid"]
-            home_item.link_detail = IDEALISTA_BASE_URL + article.find("a", {"class": "item-link"}).text
+            home_item.link_detail = IDEALISTA_BASE_URL + article.find("a", {"class": "item-link"})["href"]
             home_item.title = article.find("p", {"class": "item-highlight-phrase"})["title"]
             home_item.price = article.find("span", {"class": "item-price"}).text
             home_item.parking = article.find("span", {"class": "item-parking"}).text
