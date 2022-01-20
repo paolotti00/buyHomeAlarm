@@ -12,6 +12,10 @@ class Home:
     price = None
     zone = None
     mt2 = None
+    floor = None
+    n_rooms = None
+    parking = None
+    description = None
     link_detail = None
     origin_site = None
 
@@ -35,15 +39,22 @@ def scrape_idealista(soup):
         home_item.origin_site = SITE_NAME_IDEALISTA
         try:
             # decode
-            # home_item.title = article.find("p", {"class": "item-highlight-phrase"})
-            # home_item.price = article.find("span", {"class": "item-price"}).text
             home_item.title = article.find("p", {"class": "item-highlight-phrase"})["title"]
             home_item.price = article.find("span", {"class": "item-price"}).text
+            home_item.parking = article.find("span", {"class": "item-parking"}).text
+            for item_detail in article.findAll("span", {"class": "item-detail"}):
+                # check if mt2
+                if "m2" in item_detail.text:
+                    home_item.mt2 = item_detail.text
+                elif "piano" in item_detail.text:
+                    home_item.floor = item_detail.text
+                elif "local" in item_detail.text:
+                    home_item.n_rooms = item_detail.text
             # add element
             homes_to_return.append(home_item)
-        except Exception:
-            # do nothing
-            continue
+        except (AttributeError, TypeError) as e:
+            # do nothing and go ahead
+            pass
     return homes_to_return
 
 
@@ -57,6 +68,5 @@ def scrape_data(site_name) -> [Home]:
 
 
 for home in scrape_data(SITE_NAME_IDEALISTA):
-    print(home.title)
-    print(home.price)
+    print(vars(home))
     print("---")
