@@ -2,7 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 
 IMMOBILIARE_SITE_NAME = "IMMOBILIARE"
-IMMOBILIARE_URL = "https://www.idealista.it/aree/vendita-case/?shape=%28%28%7Dom%7EFsgpjAyqGa%7B%40enJdPihBquEmkB%7DlPjnEghNdnIgqEpqPhoFdrBtqGeB%60iGkuAxwQ_rG%7EcC%29%29"
+IMMOBILIARE_URL = "https://www.immobiliare.it/vendita-case/roma/"
 IDEALISTA_SITE_NAME = "IDEALISTA"
 IDEALISTA_URL = "https://www.idealista.it/aree/vendita-case/?shape=%28%28%7Dom%7EFsgpjAyqGa%7B%40enJdPihBquEmkB%7DlPjnEghNdnIgqEpqPhoFdrBtqGeB%60iGkuAxwQ_rG%7EcC%29%29"
 IDEALISTA_BASE_URL = "https://www.idealista.it/"
@@ -16,8 +16,10 @@ class Home:
     mt2 = None
     floor = None
     n_rooms = None
+    n_bath_rooms = None
     parking = None
     description = None
+    description_short = None
     link_detail = None
     origin_site = None
     date = None
@@ -30,25 +32,49 @@ def get_soup(url):
 
 
 def scrape_immobiliare(soup):
-    home_result = Home
-    return home_result
+    homes_to_return = []
+    items = soup.findAll("li", {"class": "in-realEstateResults__item"})
+    for item in items:
+        home_item: Home = Home()
+        home_item.origin_site = IMMOBILIARE_SITE_NAME
+        try:
+            # decode
+            home_item.id = IMMOBILIARE_SITE_NAME + "_" + item["id"]
+            home_item.link_detail = item.find("div", {"class": "nd-mediaObject__content"}).a["href"]
+            home_item.title = item.find("div", {"class": "nd-mediaObject__content"}).a["title"]
+            home_item.price = item.find("li", {"class": "in-realEstateListCard__features--main"}).text
+            home_item.description = item.find("p", {"class": "in-realEstateListCard__descriptionShort"}).text
+            home_item.description_short = item.find("div", {"class": "in-realEstateListCard__caption"}).text
+            home_item.mt2 = item.find("li", {"aria-label": "superficie"}).text
+            home_item.floor = item.find("li", {"aria-label": "piano"}).text
+            home_item.n_rooms = item.find("li", {"aria-label": "locali"}).text
+            # home_item.date = item.find("li", {"aria-label": "data vendita"}).text #fixme
+            home_item.n_bath_rooms = item.find("li", {"aria-label": "bagni"}).text
+            # add element
+            homes_to_return.append(home_item)
+        except (AttributeError, TypeError, KeyError) as e:
+            # fixme: find how to not skip the entire object in case of error, maybe i can use suppress()
+            # do nothing and go ahead
+            # print(e)
+            pass
+    return homes_to_return
 
 
 def scrape_idealista(soup):
     homes_to_return = []
-    articles = soup.findAll("article")
-    for article in articles:
+    items = soup.findAll("article")
+    for item in items:
         home_item: Home = Home()
         home_item.origin_site = IDEALISTA_SITE_NAME
         try:
             # decode
-            home_item.id = IDEALISTA_SITE_NAME + "_" + article["data-adid"]
-            home_item.link_detail = IDEALISTA_BASE_URL + article.find("a", {"class": "item-link"})["href"]
-            home_item.title = article.find("p", {"class": "item-highlight-phrase"})["title"]
-            home_item.price = article.find("span", {"class": "item-price"}).text
-            home_item.parking = article.find("span", {"class": "item-parking"}).text
-            home_item.description = article.find("div", {"class": "description"}).text
-            for item_detail in article.findAll("span", {"class": "item-detail"}):
+            home_item.id = IDEALISTA_SITE_NAME + "_" + item["data-adid"]
+            home_item.link_detail = IDEALISTA_BASE_URL + item.find("a", {"class": "item-link"})["href"]
+            home_item.title = item.find("p", {"class": "item-highlight-phrase"})["title"]
+            home_item.price = item.find("span", {"class": "item-price"}).text
+            home_item.parking = item.find("span", {"class": "item-parking"}).text
+            home_item.description = item.find("div", {"class": "description"}).text
+            for item_detail in item.findAll("span", {"class": "item-detail"}):
                 # check if mt2
                 if "m2" in item_detail.text:
                     home_item.mt2 = item_detail.text
@@ -68,14 +94,17 @@ def scrape_idealista(soup):
 
 
 def scrape_data(site_name) -> [Home]:
-    homes = [Home]
+    homes_to_return = []
     if site_name == IMMOBILIARE_SITE_NAME:
-        homes += scrape_immobiliare(get_soup(IMMOBILIARE_URL))
+        homes_to_return += scrape_immobiliare(get_soup(IMMOBILIARE_URL))
     elif site_name == IDEALISTA_SITE_NAME:
-        homes += scrape_idealista(get_soup(IDEALISTA_URL))
-    return homes
+        homes_to_return += scrape_idealista(get_soup(IDEALISTA_URL))
+    return homes_to_return
 
 
-for home in scrape_data(IDEALISTA_SITE_NAME):
+homes = []
+homes += scrape_data(IMMOBILIARE_SITE_NAME)
+homes += scrape_data(IDEALISTA_SITE_NAME)
+for home in homes:
     print(vars(home))
     print("---")
