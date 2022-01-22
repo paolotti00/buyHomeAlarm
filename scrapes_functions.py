@@ -87,3 +87,12 @@ def scrape_idealista(soup):
             # print(e)
             pass
     return homes_to_return
+
+
+def check_if_already_sent_it():
+    return True
+
+
+def draft_email(homes):
+    email_content_to_return = None
+    return homes
