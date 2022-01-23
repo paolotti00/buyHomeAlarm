@@ -13,3 +13,10 @@ class Home:
     link_detail = None
     origin_site = None
     date = None
+
+
+class Message:
+    is_sent = None
+    sent_date = None
+    creation_date = None
+    homes: [Home] = None

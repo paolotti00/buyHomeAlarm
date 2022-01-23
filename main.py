@@ -1,11 +1,13 @@
-from functions_email import Mail
-from scrapes_functions import scrape_data, draft_email
+from constants import EMAIL_SUBJECT
+from functions_email import Mail, draft_email
+from functions_scrape import scrape_data, get_only_the_new, create_message
+
+emails_to_send = ["pa.tripodi@hotmail.it", "denisediprima@virgilio.it"]
 
 homes = scrape_data()
-for home in homes:
-    print(vars(home))
-    print("---")
-email_content = draft_email(homes)
-email_sender = Mail()
-emails_to_send=["pa.tripodi@hotmail.it"]
-email_sender.send(emails_to_send, homes, email_content)
+homes = get_only_the_new(homes)
+# create message
+message = create_message(homes)
+# send email
+Mail().send(emails_to_send, EMAIL_SUBJECT, draft_email(message))
+

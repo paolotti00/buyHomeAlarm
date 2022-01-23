@@ -1,8 +1,11 @@
+from datetime import datetime
+
 import requests
 from bs4 import BeautifulSoup
 
-from classes import Home
-from constants import IMMOBILIARE_SITE_NAME, IDEALISTA_SITE_NAME, IDEALISTA_BASE_URL, IMMOBILIARE_URL, IDEALISTA_URL
+from classes import Home, Message
+from constants import IMMOBILIARE_SITE_NAME, IDEALISTA_SITE_NAME, IDEALISTA_BASE_URL, IMMOBILIARE_URL, IDEALISTA_URL, \
+    DATE_PATTERN
 
 
 def get_soup(url):
@@ -89,10 +92,24 @@ def scrape_idealista(soup):
     return homes_to_return
 
 
+def get_only_the_new(homes: [Home]):
+    homes_to_return = []
+    for home in homes:
+        # todo check on db
+        homes_to_return.append(home)
+    return homes_to_return
+
+
+def create_message(homes: [Home]):
+    message = Message()
+    message.is_sent = False
+    message.creation_date = datetime.today().strftime(DATE_PATTERN)
+    message.homes = homes
+    return message
+
+
 def check_if_already_sent_it():
     return True
 
 
-def draft_email(homes):
-    email_content_to_return = None
-    return homes
+
