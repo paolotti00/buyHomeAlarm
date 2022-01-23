@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<body>
+<p style="color: #5e9ca0;"><span style="color: #000000;">Ciao ho trovato {{n_case}} nuove case!</span></p>
+<p style="color: #5e9ca0;">&nbsp;</p>
+{% for home in homes %}
+    <p style="color: #5e9ca0;"><strong><span style="color: #000000;">Da :&nbsp;</span></strong><span style="color: #000000;">{{ home.origin_site }}</span></p>
+    <p style="color: #5e9ca0;"><strong><span style="color: #000000;">Descrizione breve: </span></strong><span style="color: #000000;">{{ home.description_short }}</span></p>
+    <table style="height: 72px; width: 100%; border-collapse: collapse; border-style: none;" border="1">
+        <tbody>
+        <tr style="height: 18px;">
+            <td style="width: 50%; height: 18px;"><strong><span style="color: #000000;">Titolo : </span></strong><span style="color: #000000;">{{ home.title }}</span></td>
+            <td style="width: 50%; height: 18px;"><strong><span style="color: #000000;">Prezzo : </span></strong><span style="color: #000000;">{{ home.price }}</span></td>
+        </tr>
+        <tr style="height: 18px;">
+            <td style="width: 50%; height: 18px;"><strong><span style="color: #000000;">Metri quadri : </span></strong><span style="color: #000000;">{{ home.mt2 }}</span></td>
+            <td style="width: 50%; height: 18px;"><strong><span style="color: #000000;">Numero di stanze : </span></strong><span style="color: #000000;">{{ home.n_rooms }}</span></td>
+        </tr>
+        <tr style="height: 18px;">
+            <td style="width: 50%; height: 18px;"><strong><span style="color: #000000;">Piano : </span></strong><span style="color: #000000;">{{ home.floor }}</span></td>
+            <td style="width: 50%; height: 18px;"><strong><span style="color: #000000;">Numero bagni:&nbsp; </span></strong><span style="color: #000000;">{{ home.n_bath_rooms }}</span></td>
+        </tr>
+        <tr style="height: 18px;">
+            <td style="width: 50%; height: 18px;"><strong><span style="color: #000000;">Parcheggio: </span></strong><span style="color: #000000;">{{ home.parking }}</span></td>
+            <td style="width: 50%; height: 18px;"><strong><span style="color: #000000;">Data annuncio: </span></strong><span style="color: #000000;">{</span><span style="color: #000000;">{ home.date }}</span></td>
+        </tr>
+        </tbody>
+    </table>
+    <p style="color: #5e9ca0;"><strong><span style="color: #000000;">Descrizione lunga: </span></strong><span style="color: #000000;">{{ home.description }}</span></p>
+    <p style="color: #5e9ca0;"><span style="color: #000000;">Vai a vederlo! --&gt;</span> <a href="{{ home.link_detail }}">Link dettaglio</a></p>
+    <p style="color: #5e9ca0;">&nbsp;</p>
+    <hr />
+    <p style="color: #5e9ca0;">&nbsp;</p>
+    <p style="color: #5e9ca0;">&nbsp;</p>
+    <p>&nbsp;</p>
+{% endfor %}
+</body>
+</html>

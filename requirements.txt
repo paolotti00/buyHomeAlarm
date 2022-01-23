@@ -3,3 +3,4 @@ requests_html
 requests
 html5lib
 mongita
+jinja2

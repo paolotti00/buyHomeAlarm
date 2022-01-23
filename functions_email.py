@@ -1,5 +1,7 @@
+import os
 import smtplib
 import ssl
+import sys
 from email.message import EmailMessage
 
 
@@ -16,7 +18,7 @@ class Mail:
         service = smtplib.SMTP_SSL(self.smtp_server_domain_name, self.port, context=ssl_context)
         service.login(self.sender_mail, self.password)
         msg = EmailMessage()
-        msg['Subject'] = 'This is my first Python email'
+        msg['Subject'] = 'Ecco le nuove case!'
         msg['From'] = self.sender_mail
         msg['To'] = emails
         msg.set_content(content, subtype='html')
@@ -24,25 +26,15 @@ class Mail:
         service.quit()
 
 
-def draft_email(message):
-    email_content_to_return = '''
-<!DOCTYPE html>
-<html>
-    <body>
-        <div style="background-color:#eee;padding:10px 20px;">
-            <h2 style="font-family:Georgia, 'Times New Roman', Times, serif;color#454349;">My newsletter</h2>
-        </div>
-        <div style="padding:20px 0px">
-            <div style="height: 500px;width:400px">
-                <img src="https://dummyimage.com/500x300/000/fff&text=Dummy+image" style="height: 300px;">
-                <div style="text-align:center;">
-                    <h3>Article 1</h3>
-                    <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. A ducimus deleniti nemo quibusdam iste sint!</p>
-                    <a href="#">Read more</a>
-                </div>
-            </div>
-        </div>
-    </body>
-</html>
-'''
-    return email_content_to_return
+def render_email_template(template, **kwargs):
+    # renders a Jinja template into HTML
+    # check if template exists
+    if not os.path.exists(template):
+        print('No template file present: %s' % template)
+        sys.exit()
+
+    import jinja2
+    template_loader = jinja2.FileSystemLoader(searchpath=".")
+    template_env = jinja2.Environment(loader=template_loader)
+    templ = template_env.get_template(template)
+    return templ.render(**kwargs)
