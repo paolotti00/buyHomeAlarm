@@ -6,6 +6,7 @@ from bs4 import BeautifulSoup
 from classes import Home, Message
 from constants import IMMOBILIARE_SITE_NAME, IDEALISTA_SITE_NAME, IDEALISTA_BASE_URL, IMMOBILIARE_URL, IDEALISTA_URL, \
     DATE_PATTERN
+from functions_repository import Repository
 
 
 def get_soup(url):
@@ -93,9 +94,12 @@ def scrape_idealista(soup):
 
 
 def get_only_the_new(homes: [Home]):
+    repository = Repository()
     homes_to_return = []
     for home in homes:
         # todo check on db
+        if len(repository.get_home(home.id)) > 0:
+            continue
         homes_to_return.append(home)
     return homes_to_return
 
@@ -110,6 +114,3 @@ def create_message(homes: [Home]):
 
 def check_if_already_sent_it():
     return True
-
-
-
