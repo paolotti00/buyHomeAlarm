@@ -2,6 +2,11 @@ CONF:
   DATE_PATTERN: "%Y-%m-%d-%H:%M:%S"
 EMAIL:
   SUBJECT: "nuovi annunci speriamo bene!"
+  SENDER:
+    EMAIL: "paolo.varie00@gmail.com"
+    PASSWORD: "paolo.varie0027..06..88"
+    DOMAIN_NAME: "smtp.gmail.com"
+    PORT: 465
 SITES:
   -
     SITE_NAME: "IMMOBILIARE"
