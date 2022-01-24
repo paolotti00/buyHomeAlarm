@@ -1,0 +1,18 @@
+CONF:
+  DATE_PATTERN: "%Y-%m-%d-%H:%M:%S"
+EMAIL:
+  SUBJECT: "nuovi annunci speriamo bene!"
+SITES:
+  -
+    SITE_NAME: "IMMOBILIARE"
+    BASE_URL: ""
+    QUERY_URL:
+      - "https://www.immobiliare.it/vendita-case/roma/"
+      - ""
+  -
+    SITE_NAME: "IDEALISTA"
+    BASE_URL: "https://www.idealista.it/"
+    QUERY_URL:
+      - "https://www.idealista.it/"
+      - ""
+

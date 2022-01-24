@@ -5,3 +5,4 @@ IDEALISTA_URL = "https://www.idealista.it/aree/vendita-case/?shape=%28%28%7Dom%7
 IDEALISTA_BASE_URL = "https://www.idealista.it/"
 DATE_PATTERN = '%Y-%m-%d-%H:%M:%S'
 EMAIL_SUBJECT = 'nuovi annunci speriamo bene!'
+CONFIG_FILE="config.yml"
