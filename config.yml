@@ -1,23 +1,23 @@
-CONF:
-  DATE_PATTERN: "%Y-%m-%d-%H:%M:%S"
-EMAIL:
-  SUBJECT: "nuovi annunci speriamo bene!"
-  SENDER:
-    EMAIL: "paolo.varie00@gmail.com"
-    PASSWORD: "paolo.varie0027..06..88"
-    DOMAIN_NAME: "smtp.gmail.com"
-    PORT: 465
-SITES:
+conf:
+  date_pattern: "%y-%m-%d-%h:%m:%s"
+email:
+  subject: "nuovi annunci speriamo bene!"
+  sender:
+    email: "paolo.varie00@gmail.com"
+    password: "paolo.varie0027..06..88"
+    domain_name: "smtp.gmail.com"
+    port: 465
+sites:
   -
-    SITE_NAME: "IMMOBILIARE"
-    BASE_URL: ""
-    QUERY_URL:
+    site_name: "immobiliare"
+    base_url: ""
+    query_urls:
       - "https://www.immobiliare.it/vendita-case/roma/"
       - ""
   -
-    SITE_NAME: "IDEALISTA"
-    BASE_URL: "https://www.idealista.it/"
-    QUERY_URL:
+    site_name: "idealista"
+    base_url: "https://www.idealista.it/"
+    query_urls:
       - "https://www.idealista.it/"
       - ""
 

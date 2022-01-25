@@ -20,3 +20,29 @@ class Message:
     sent_date = None
     creation_date = None
     homes: [Home] = None
+
+
+# configuration file
+
+class Site:
+    site_name = None
+    base_url = None
+    query_urls: [] = None
+
+
+class Sender:
+    email = None
+    password = None
+    domain_name = None
+    port = None
+
+
+class Email:
+    subject = None
+    sender: Sender = None
+
+
+class Conf:
+    date_pattern = None
+    email: Email = None
+    sites: [Site] = None

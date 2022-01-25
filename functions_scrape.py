@@ -3,9 +3,9 @@ from datetime import datetime
 import requests
 from bs4 import BeautifulSoup
 
-from classes import Home, Message
-from constants import IMMOBILIARE_SITE_NAME, IDEALISTA_SITE_NAME, IDEALISTA_BASE_URL, IMMOBILIARE_URL, IDEALISTA_URL, \
-    DATE_PATTERN
+from classes import Home, Message, Site
+from constants import IMMOBILIARE_SITE_NAME, IDEALISTA_SITE_NAME
+from functions_config import get_sites, get_config
 from functions_repository import Repository
 
 
@@ -17,29 +17,32 @@ def get_soup(url):
 
 def scrape_data() -> [Home]:
     homes = []
-    homes += scrape_data_(IMMOBILIARE_SITE_NAME)
-    homes += scrape_data_(IDEALISTA_SITE_NAME)
+    sites: [Site] = get_sites()
+    for site in sites:
+        homes += scrape_data_(site.site_name)
     return homes
 
 
-def scrape_data_(site_name) -> [Home]:
+def scrape_data_(site: Site) -> [Home]:
     homes_to_return = []
-    if site_name == IMMOBILIARE_SITE_NAME:
-        homes_to_return += scrape_immobiliare(get_soup(IMMOBILIARE_URL))
-    elif site_name == IDEALISTA_SITE_NAME:
-        homes_to_return += scrape_idealista(get_soup(IDEALISTA_URL))
+    if site.site_name.casefold() == IMMOBILIARE_SITE_NAME.casefold():
+        for site_url in site.query_urls:
+            homes_to_return += scrape_immobiliare(get_soup(site_url), site)
+    elif site.site_name.casefold() == IDEALISTA_SITE_NAME.casefold():
+        for site_url in site.query_urls:
+            homes_to_return += scrape_idealista(get_soup(site_url), site)
     return homes_to_return
 
 
-def scrape_immobiliare(soup):
+def scrape_immobiliare(soup, site: Site):
     homes_to_return = []
     items = soup.findAll("li", {"class": "in-realEstateResults__item"})
     for item in items:
         home_item: Home = Home()
-        home_item.origin_site = IMMOBILIARE_SITE_NAME
+        home_item.origin_site = site.site_name
         try:
             # decode
-            home_item.id = IMMOBILIARE_SITE_NAME + "_" + item["id"]
+            home_item.id = site.site_name + "_" + item["id"]
             home_item.link_detail = item.find("div", {"class": "nd-mediaObject__content"}).a["href"]
             home_item.title = item.find("div", {"class": "nd-mediaObject__content"}).a["title"]
             home_item.price = item.find("li", {"class": "in-realEstateListCard__features--main"}).text
@@ -60,16 +63,16 @@ def scrape_immobiliare(soup):
     return homes_to_return
 
 
-def scrape_idealista(soup):
+def scrape_idealista(soup, site: Site):
     homes_to_return = []
     items = soup.findAll("article")
     for item in items:
         home_item: Home = Home()
-        home_item.origin_site = IDEALISTA_SITE_NAME
+        home_item.origin_site = site.site_name
         try:
             # decode
-            home_item.id = IDEALISTA_SITE_NAME + "_" + item["data-adid"]
-            home_item.link_detail = IDEALISTA_BASE_URL + item.find("a", {"class": "item-link"})["href"]
+            home_item.id = site.site_name + "_" + item["data-adid"]
+            home_item.link_detail = site.base_url + item.find("a", {"class": "item-link"})["href"]
             home_item.title = item.find("p", {"class": "item-highlight-phrase"})["title"]
             home_item.price = item.find("span", {"class": "item-price"}).text
             home_item.parking = item.find("span", {"class": "item-parking"}).text
@@ -107,7 +110,7 @@ def get_only_the_new(homes: [Home]):
 def create_message(homes: [Home]):
     message = Message()
     message.is_sent = False
-    message.creation_date = datetime.today().strftime(DATE_PATTERN)
+    message.creation_date = datetime.today().strftime(get_config().date_pattern)
     message.homes = homes
     return message
 
