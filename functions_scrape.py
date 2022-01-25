@@ -40,26 +40,57 @@ def scrape_immobiliare(soup, site: Site):
     for item in items:
         home_item: Home = Home()
         home_item.origin_site = site.site_name
+        # decode
         try:
-            # decode
             home_item.id = site.site_name + "_" + item["id"]
-            home_item.link_detail = item.find("div", {"class": "nd-mediaObject__content"}).a["href"]
-            home_item.title = item.find("div", {"class": "nd-mediaObject__content"}).a["title"]
-            home_item.price = item.find("li", {"class": "in-realEstateListCard__features--main"}).text
-            home_item.description = item.find("p", {"class": "in-realEstateListCard__descriptionShort"}).text
-            home_item.description_short = item.find("div", {"class": "in-realEstateListCard__caption"}).text
-            home_item.mt2 = item.find("li", {"aria-label": "superficie"}).text
-            home_item.floor = item.find("li", {"aria-label": "piano"}).text
-            home_item.n_rooms = item.find("li", {"aria-label": "locali"}).text
-            # home_item.date = item.find("li", {"aria-label": "data vendita"}).text #fixme
-            home_item.n_bath_rooms = item.find("li", {"aria-label": "bagni"}).text
-            # add element
-            homes_to_return.append(home_item)
         except (AttributeError, TypeError, KeyError) as e:
-            # fixme: find how to not skip the entire object in case of error, maybe i can use suppress()
             # do nothing and go ahead
             # print(e)
             pass
+        try:
+            home_item.link_detail = item.find("div", {"class": "nd-mediaObject__content"}).a["href"]
+        except (AttributeError, TypeError, KeyError) as e:
+            # do nothing and go ahead
+            # print(e)
+            pass
+        try:
+            home_item.title = item.find("div", {"class": "nd-mediaObject__content"}).a["title"]
+        except (AttributeError, TypeError, KeyError) as e:
+            # do nothing and go ahead
+            # print(e)
+            pass
+
+        try:
+            home_item.price = item.find("li", {"class": "in-realEstateListCard__features--main"}).text
+        except (AttributeError, TypeError, KeyError) as e:
+            pass
+        try:
+            home_item.description = item.find("p", {"class": "in-realEstateListCard__descriptionShort"}).text
+        except (AttributeError, TypeError, KeyError) as e:
+            pass
+        try:
+            home_item.description_short = item.find("div", {"class": "in-realEstateListCard__caption"}).text
+        except (AttributeError, TypeError, KeyError) as e:
+            pass
+        try:
+            home_item.mt2 = item.find("li", {"aria-label": "superficie"}).text
+        except (AttributeError, TypeError, KeyError) as e:
+            pass
+        try:
+            home_item.floor = item.find("li", {"aria-label": "piano"}).text
+        except (AttributeError, TypeError, KeyError) as e:
+            pass
+        try:
+            home_item.n_rooms = item.find("li", {"aria-label": "locali"}).text
+        except (AttributeError, TypeError, KeyError) as e:
+            pass
+        # home_item.date = item.find("li", {"aria-label": "data vendita"}).text #fixme
+        try:
+            home_item.n_bath_rooms = item.find("li", {"aria-label": "bagni"}).text
+        except (AttributeError, TypeError, KeyError) as e:
+            pass
+        # add element
+        homes_to_return.append(home_item)
     return homes_to_return
 
 
@@ -69,14 +100,33 @@ def scrape_idealista(soup, site: Site):
     for item in items:
         home_item: Home = Home()
         home_item.origin_site = site.site_name
+
+        # decode
         try:
-            # decode
             home_item.id = site.site_name + "_" + item["data-adid"]
+        except (AttributeError, TypeError, KeyError) as e:
+            pass
+        try:
             home_item.link_detail = site.base_url + item.find("a", {"class": "item-link"})["href"]
+        except (AttributeError, TypeError, KeyError) as e:
+            pass
+        try:
             home_item.title = item.find("p", {"class": "item-highlight-phrase"})["title"]
+        except (AttributeError, TypeError, KeyError) as e:
+            pass
+        try:
             home_item.price = item.find("span", {"class": "item-price"}).text
+        except (AttributeError, TypeError, KeyError) as e:
+            pass
+        try:
             home_item.parking = item.find("span", {"class": "item-parking"}).text
+        except (AttributeError, TypeError, KeyError) as e:
+            pass
+        try:
             home_item.description = item.find("div", {"class": "description"}).text
+        except (AttributeError, TypeError, KeyError) as e:
+            pass
+        try:
             for item_detail in item.findAll("span", {"class": "item-detail"}):
                 # check if mt2
                 if "m2" in item_detail.text:
@@ -85,14 +135,11 @@ def scrape_idealista(soup, site: Site):
                     home_item.floor = item_detail.text
                 elif "local" in item_detail.text:
                     home_item.n_rooms = item_detail.text
-            # todo date
-            # add element
-            homes_to_return.append(home_item)
         except (AttributeError, TypeError, KeyError) as e:
-            # fixme: find how to not skip the entire object in case of error, maybe i can use suppress()
-            # do nothing and go ahead
-            # print(e)
             pass
+        # todo date
+        # add element
+        homes_to_return.append(home_item)
     return homes_to_return
 
 
