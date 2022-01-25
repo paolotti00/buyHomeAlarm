@@ -17,5 +17,5 @@ sites:
     site_name: "idealista"
     base_url: "https://www.idealista.it/"
     query_urls:
-      - "https://www.idealista.it/"
+      - "https://www.idealista.it/aree/vendita-case/?shape=%28%28yvz%7EFqinkAi%60%40kKdAq%5DyB%7BZdCoXrE%7B%40%7CXsDvUrVqWdoA%29%29"
 
