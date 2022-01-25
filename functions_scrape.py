@@ -19,7 +19,7 @@ def scrape_data() -> [Home]:
     homes = []
     sites: [Site] = get_sites()
     for site in sites:
-        homes += scrape_data_(site.site_name)
+        homes += scrape_data_(site)
     return homes
 
 
@@ -110,8 +110,8 @@ def get_only_the_new(homes: [Home]):
 def create_message(homes: [Home]):
     message = Message()
     message.is_sent = False
-    message.creation_date = datetime.today().strftime(get_config().date_pattern)
-    message.homes = homes
+    message.creation_date = datetime.today().strftime(get_config().conf.date_pattern)
+    # message.homes = homes #fixme bson error
     return message
 
 

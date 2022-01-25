@@ -13,11 +13,9 @@ sites:
     base_url: ""
     query_urls:
       - "https://www.immobiliare.it/vendita-case/roma/"
-      - ""
   -
     site_name: "idealista"
     base_url: "https://www.idealista.it/"
     query_urls:
       - "https://www.idealista.it/"
-      - ""
 

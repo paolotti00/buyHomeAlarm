@@ -44,5 +44,9 @@ class Email:
 
 class Conf:
     date_pattern = None
+
+
+class Config:
+    conf: Conf = None
     email: Email = None
     sites: [Site] = None

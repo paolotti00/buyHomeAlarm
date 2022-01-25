@@ -15,5 +15,5 @@ if len(homes) > 0:
     # save in db
     repository = Repository()
     repository.save_many_homes(homes)
-    repository.save_many_messages(message)
+    repository.save_message(message)
 

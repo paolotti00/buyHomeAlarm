@@ -1,5 +1,7 @@
 from mongita import MongitaClientDisk
 
+from classes import Message
+
 
 def save_many(collection, list_data: []):
     for data in list_data:
@@ -15,11 +17,16 @@ class Repository:
         self.messages_collection = self.db.messages_collection
         self.homes_collection = self.db.homes_collection
 
-    def save_many_homes(self, list_of_data):
+    def save_many_homes(self, list_of_data: []):
         save_many(self.homes_collection, list_of_data)
 
-    def save_many_messages(self, list_of_data):
+    def save_many_messages(self, list_of_data: []):
         save_many(self.messages_collection, list_of_data)
+
+    def save_message(self, data):
+        list_of_data: [Message] = []
+        list_of_data.append(data)
+        self.save_many_messages(list_of_data)
 
     def get_home(self, home_id):
         result = self.homes_collection.find({'id': {'$eq': home_id}})

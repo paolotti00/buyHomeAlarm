@@ -3,7 +3,7 @@ from collections import namedtuple
 import yaml
 from yaml import UnsafeLoader
 
-from classes import Site, Conf
+from classes import Site, Conf, Config
 
 
 # this function permit to convert a dict to object recursively #https://joelmccune.com/python-dictionary-as-object/
@@ -17,8 +17,8 @@ class DictObj:
                 setattr(self, key, DictObj(val) if isinstance(val, dict) else val)
 
 
-def get_config() -> Conf:
-    to_return: Conf
+def get_config() -> Config:
+    to_return: Config
     with open("config.yml", "r") as ymlfile:
         cfg = yaml.load(ymlfile, Loader=UnsafeLoader)
         # to_return = namedtuple('struct', cfg.keys())(*cfg.values())
