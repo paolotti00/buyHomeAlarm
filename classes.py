@@ -44,6 +44,7 @@ class Email:
 
 class Conf:
     date_pattern = None
+    scheduler_time_minutes = None
 
 
 class Config:
