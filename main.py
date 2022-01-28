@@ -31,12 +31,7 @@ def main():
     print("end")
 
 
-
-
-
-
-
 config = get_config()
-scheduler.add_interval_job(main, seconds=config.conf.scheduler_time_minutes)
+scheduler.add_interval_job(main, minutes=config.conf.scheduler_time_minutes)
 scheduler.start()
 start_sched_and_keep_alive(scheduler)

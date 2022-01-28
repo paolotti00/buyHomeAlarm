@@ -1,6 +1,6 @@
 conf:
   date_pattern: "%y-%m-%d-%h:%m:%s"
-  scheduler_time_minutes: 5
+  scheduler_time_minutes: 120
 email:
   subject: "nuovi annunci speriamo bene!"
   sender:
