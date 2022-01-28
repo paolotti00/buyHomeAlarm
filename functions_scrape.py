@@ -3,9 +3,9 @@ from datetime import datetime
 import requests
 from bs4 import BeautifulSoup
 
-from classes import Home, Message, Site
+from classes import Home, Message, Site, Zone
 from constants import IMMOBILIARE_SITE_NAME, IDEALISTA_SITE_NAME
-from functions_config import get_sites, get_config
+from functions_config import get_config, get_zones
 from functions_repository import Repository
 
 
@@ -15,22 +15,23 @@ def get_soup(url):
     return BeautifulSoup(requests.get(url, headers=headers).text, "html5lib")
 
 
-def scrape_data() -> [Home]:
-    homes = []
-    sites: [Site] = get_sites()
-    for site in sites:
-        homes += scrape_data_(site)
-    return homes
+def scrape_data() -> [Zone]:
+    zones: [Zone] = get_zones()
+    for zone in zones:
+        zone.homes = scrape_data_(zone)
+    return zones
 
 
-def scrape_data_(site: Site) -> [Home]:
+def scrape_data_(zone: Zone) -> [Home]:
     homes_to_return = []
-    if site.site_name.casefold() == IMMOBILIARE_SITE_NAME.casefold():
-        for site_url in site.query_urls:
-            homes_to_return += scrape_immobiliare(get_soup(site_url), site)
-    elif site.site_name.casefold() == IDEALISTA_SITE_NAME.casefold():
-        for site_url in site.query_urls:
-            homes_to_return += scrape_idealista(get_soup(site_url), site)
+    for site in zone.sites:
+        if site.query_urls and len(site.query_urls) > 0:
+            if site.site_name.casefold() == IMMOBILIARE_SITE_NAME.casefold():
+                for query_url in site.query_urls:
+                    homes_to_return += scrape_immobiliare(get_soup(query_url), site)
+            elif site.site_name.casefold() == IDEALISTA_SITE_NAME.casefold():
+                for query_url in site.query_urls:
+                    homes_to_return += scrape_idealista(get_soup(query_url), site)
     return homes_to_return
 
 
@@ -143,7 +144,7 @@ def scrape_idealista(soup, site: Site):
     return homes_to_return
 
 
-def get_only_the_new(homes: [Home]):
+def get_only_the_new_homes(homes: [Home]):
     repository = Repository()
     homes_to_return = []
     for home in homes:
@@ -154,11 +155,11 @@ def get_only_the_new(homes: [Home]):
     return homes_to_return
 
 
-def create_message(homes: [Home]):
+def create_message(zones: [Zone]):
     message = Message()
     message.is_sent = False
-    message.creation_date = datetime.today().strftime(get_config().conf.date_pattern)
-    # message.homes = homes #fixme bson error
+    # message.creation_date = datetime.today().strftime(get_config().conf.date_pattern) #todo fix invalid format name
+    # message.zones = zones #fixme bson error
     return message
 
 

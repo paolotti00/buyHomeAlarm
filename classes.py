@@ -15,19 +15,27 @@ class Home:
     date = None
 
 
+class Site:
+    site_name = None
+    base_url = None
+    query_urls: [str] = None
+
+
+class Zone:
+    title = None
+    description = None
+    sites: [Site] = None
+    homes: [Home] = None
+
+
 class Message:
     is_sent = None
     sent_date = None
     creation_date = None
-    homes: [Home] = None
+    zones: [Zone] = None
 
 
 # configuration file
-
-class Site:
-    site_name = None
-    base_url = None
-    query_urls: [] = None
 
 
 class Sender:
@@ -51,3 +59,4 @@ class Config:
     conf: Conf = None
     email: Email = None
     sites: [Site] = None
+    zones: [Zone] = None

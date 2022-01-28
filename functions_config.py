@@ -3,7 +3,7 @@ from collections import namedtuple
 import yaml
 from yaml import UnsafeLoader
 
-from classes import Site, Conf, Config
+from classes import Site, Conf, Config, Zone
 
 
 # this function permit to convert a dict to object recursively #https://joelmccune.com/python-dictionary-as-object/
@@ -30,5 +30,5 @@ def get_email_config():
     return get_config().email
 
 
-def get_sites() -> [Site]:
-    return get_config().sites
+def get_zones() -> [Zone]:
+    return get_config().zones
