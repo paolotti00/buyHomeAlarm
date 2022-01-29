@@ -1,4 +1,4 @@
-conf:
+tech_conf:
   date_pattern: "%y-%m-%d-%h:%m:%s"
   scheduler_time_minutes: 120
 email:
@@ -8,29 +8,29 @@ email:
     password: "paolo.varie0027..06..88"
     domain_name: "smtp.gmail.com"
     port: 465
-# zones
-zones:
+supported_sites_conf :
+  - site_name: "immobiliare"
+    base_urls: ""
+    api_case_string: "search-list"
+  - site_name: "idealista"
+    base_ulrs: "https://www.idealista.it/"
+searches:
   - title: "zona pietralata (nuova itor)"
     description: ""
     sites:
       - site_name: "immobiliare"
-        base_url: ""
         query_urls:
-          #- "https://www.immobiliare.it/vendita-case/roma/"
-          #- "https://www.immobiliare.it/search-list/?vrt=41.924393%2C12.541108%3B41.922525%2C12.540679%3B41.917383%2C12.543168%3B41.921327%2C12.546773%3B41.924951%2C12.546108%3B41.925766%2C12.545292%3B41.926133%2C12.543082%3B41.924393%2C12.541108&idContratto=1&idCategoria=1&prezzoMassimo=300000&superficieMinima=80&fasciaPiano[0]=20&criterio=rilevanza&ordine=desc&__lang=it&pag=1&slau=1"
+          - "https://www.immobiliare.it/search-list/?vrt=41.924393%2C12.541108%3B41.922525%2C12.540679%3B41.917383%2C12.543168%3B41.921327%2C12.546773%3B41.924951%2C12.546108%3B41.925766%2C12.545292%3B41.926133%2C12.543082%3B41.924393%2C12.541108&idContratto=1&idCategoria=1&prezzoMassimo=300000&superficieMinima=80&fasciaPiano[0]=20&criterio=rilevanza&ordine=desc&__lang=it&pag=1&slau=1"
       - site_name: "idealista"
-        base_url: "https://www.idealista.it/"
         query_urls:
           - "https://www.idealista.it/aree/vendita-case/con-prezzo_280000,dimensione_80,piani-intermedi/?shape=%28%28yu%7B%7EFmookAyAs%5EkCsg%40%60%7C%40aVdD%7Er%40yDn%5Cgt%40xL%29%29"
   - title: "ciampino"
     description: ""
     sites:
       - site_name: "immobiliare"
-        base_url: ""
         query_urls:
           - "https://www.immobiliare.it/vendita-case/ciampino/con-piani-intermedi/?criterio=rilevanza&prezzoMassimo=280000"
       - site_name: "idealista"
-        base_url: "https://www.idealista.it/"
         query_urls:
           - "https://www.idealista.it/vendita-case/ciampino-roma/con-prezzo_280000,dimensione_80,piani-intermedi/"
 

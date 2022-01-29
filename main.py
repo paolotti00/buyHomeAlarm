@@ -12,18 +12,18 @@ scheduler = Scheduler()
 
 
 def main():
-    zones = scrape_data()
+    searches = scrape_data()
     zones_to_send: [] = []
-    for zone in zones:
-        homes = get_only_the_new_homes(zone.homes)
+    for research in searches:
+        homes = get_only_the_new_homes(research.homes)
         if len(homes) > 0:
-            zones_to_send.append(zone)
+            zones_to_send.append(research)
     if len(zones_to_send) > 0:
         # create message
         message = create_message(zones_to_send)
         # send email
         Mail().send(emails_to_send, get_config().email.subject,
-                    render_email_template("email_jinja_template.html", zones=zones))
+                    render_email_template("email_jinja_template.html", zones=searches))
         # save in db
         repository = Repository()
         repository.save_many_homes(homes)
@@ -32,6 +32,7 @@ def main():
 
 
 config = get_config()
-scheduler.add_interval_job(main, minutes=config.conf.scheduler_time_minutes)
-scheduler.start()
-start_sched_and_keep_alive(scheduler)
+scheduler.add_interval_job(main, minutes=config.tech_conf.scheduler_time_minutes)
+# scheduler.start()
+# start_sched_and_keep_alive(scheduler)
+main()

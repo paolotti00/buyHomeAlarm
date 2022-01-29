@@ -3,9 +3,9 @@ from datetime import datetime
 import requests
 from bs4 import BeautifulSoup
 
-from classes import Home, Message, Site, Zone
+from classes import Home, Message, Site, Search
 from constants import IMMOBILIARE_SITE_NAME, IDEALISTA_SITE_NAME
-from functions_config import get_config, get_zones
+from functions_config import get_config, get_searches, get_supported_site_conf
 from functions_repository import Repository
 
 
@@ -15,27 +15,36 @@ def get_soup(url):
     return BeautifulSoup(requests.get(url, headers=headers).text, "html5lib")
 
 
-def scrape_data() -> [Zone]:
-    zones: [Zone] = get_zones()
-    for zone in zones:
-        zone.homes = scrape_data_(zone)
-    return zones
+def scrape_data() -> [Home]:
+    searches: [Search] = get_searches()
+    for search in searches:
+        homes_to_return = []
+        for site in search.sites:
+            if site.query_urls and len(site.query_urls) > 0:
+                if site.site_name.casefold() == IMMOBILIARE_SITE_NAME.casefold():
+                    for query_url in site.query_urls:
+                        homes_to_return.append(get_data_immobiliare(query_url, get_supported_site_conf(site.site_name)))
+                elif site.site_name.casefold() == IDEALISTA_SITE_NAME.casefold():
+                    for query_url in site.query_urls:
+                        homes_to_return += scrape_idealista(get_soup(query_url), site)
+        search.homes = homes_to_return
+    return searches
 
 
-def scrape_data_(zone: Zone) -> [Home]:
+def get_data_immobiliare(query_url: str, supported_site_conf: Site) -> [Home]:
+    if supported_site_conf.api_case_string in query_url:
+        get_from_api_immobiliare(query_url)
+    else:
+        scrape_immobiliare(get_soup(query_url), supported_site_conf)
+
+
+def get_from_api_immobiliare(query_url) -> [Home]:
+    # todo
     homes_to_return = []
-    for site in zone.sites:
-        if site.query_urls and len(site.query_urls) > 0:
-            if site.site_name.casefold() == IMMOBILIARE_SITE_NAME.casefold():
-                for query_url in site.query_urls:
-                    homes_to_return += scrape_immobiliare(get_soup(query_url), site)
-            elif site.site_name.casefold() == IDEALISTA_SITE_NAME.casefold():
-                for query_url in site.query_urls:
-                    homes_to_return += scrape_idealista(get_soup(query_url), site)
     return homes_to_return
 
 
-def scrape_immobiliare(soup, site: Site):
+def scrape_immobiliare(soup, site: Site) -> [Home]:
     homes_to_return = []
     items = soup.findAll("li", {"class": "in-realEstateResults__item"})
     for item in items:
@@ -148,14 +157,13 @@ def get_only_the_new_homes(homes: [Home]):
     repository = Repository()
     homes_to_return = []
     for home in homes:
-        # todo check on db
-        if len(repository.get_home(home.id)) > 0:
+        if not home or len(repository.get_home(home.id)) > 0:
             continue
         homes_to_return.append(home)
     return homes_to_return
 
 
-def create_message(zones: [Zone]):
+def create_message(searches: [Search]):
     message = Message()
     message.is_sent = False
     # message.creation_date = datetime.today().strftime(get_config().conf.date_pattern) #todo fix invalid format name

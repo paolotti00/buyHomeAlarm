@@ -1,9 +1,7 @@
-from collections import namedtuple
-
 import yaml
 from yaml import UnsafeLoader
 
-from classes import Site, Conf, Config, Zone
+from classes import Config, Search, Site
 
 
 # this function permit to convert a dict to object recursively #https://joelmccune.com/python-dictionary-as-object/
@@ -30,5 +28,11 @@ def get_email_config():
     return get_config().email
 
 
-def get_zones() -> [Zone]:
-    return get_config().zones
+def get_searches() -> [Search]:
+    return get_config().searches
+
+
+def get_supported_site_conf(site_name) -> [Site]:
+    for supported_sites_conf in get_config().supported_sites_conf:
+        if supported_sites_conf.site_name.casefold() == site_name:
+            return supported_sites_conf

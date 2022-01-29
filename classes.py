@@ -19,9 +19,10 @@ class Site:
     site_name = None
     base_url = None
     query_urls: [str] = None
+    api_case_string = None
 
 
-class Zone:
+class Search:
     title = None
     description = None
     sites: [Site] = None
@@ -32,7 +33,7 @@ class Message:
     is_sent = None
     sent_date = None
     creation_date = None
-    zones: [Zone] = None
+    zones: [Search] = None
 
 
 # configuration file
@@ -50,13 +51,14 @@ class Email:
     sender: Sender = None
 
 
-class Conf:
+class TechConf:
     date_pattern = None
     scheduler_time_minutes = None
 
 
 class Config:
-    conf: Conf = None
+    tech_conf: TechConf = None
     email: Email = None
     sites: [Site] = None
-    zones: [Zone] = None
+    supported_sites_conf: [Site] = None
+    searches: [Search] = None
