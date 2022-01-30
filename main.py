@@ -35,7 +35,6 @@ def main():
 logging.basicConfig(filename='app.log', filemode='a', format='%(asctime)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
 config = get_config()
-#scheduler.add_interval_job(main, minutes=config.tech_conf.scheduler_time_minutes)
-#scheduler.start()
-#start_sched_and_keep_alive(scheduler)
-main()
+scheduler.add_interval_job(main, minutes=config.tech_conf.scheduler_time_minutes)
+scheduler.start()
+start_sched_and_keep_alive(scheduler)
