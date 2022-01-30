@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime
 
 import requests
@@ -16,26 +17,31 @@ def get_soup(url):
 
 
 def scrape_data() -> [Home]:
+    logging.info("start to get data from searches")
     searches: [Search] = get_searches()
+    homes_to_return = []
     for search in searches:
-        homes_to_return = []
         for site in search.sites:
             if site.query_urls and len(site.query_urls) > 0:
                 if site.site_name.casefold() == IMMOBILIARE_SITE_NAME.casefold():
-                    for query_url in site.query_urls:
-                        homes_to_return.append(get_data_immobiliare(query_url, get_supported_site_conf(site.site_name)))
+                    homes_to_return += get_data_immobiliare(site.query_urls, get_supported_site_conf(site.site_name))
                 elif site.site_name.casefold() == IDEALISTA_SITE_NAME.casefold():
-                    for query_url in site.query_urls:
-                        homes_to_return += scrape_idealista(get_soup(query_url), site)
+                    homes_to_return += get_data_idealista(site.query_urls,get_supported_site_conf(site.site_name))
         search.homes = homes_to_return
+    logging.info("get data from searches finished, found %s in %s searches", len(homes_to_return), len(searches))
     return searches
 
 
-def get_data_immobiliare(query_url: str, supported_site_conf: Site) -> [Home]:
-    if supported_site_conf.api_case_string in query_url:
-        get_from_api_immobiliare(query_url)
-    else:
-        scrape_immobiliare(get_soup(query_url), supported_site_conf)
+# immobiliare
+def get_data_immobiliare(query_urls: [str], supported_site_conf: Site) -> [Home]:
+    # todo fix the empty case
+    homes_to_return = [Home]
+    for query_url in query_urls:
+        if supported_site_conf.api_case_string in query_url:
+            homes_to_return += get_from_api_immobiliare(query_url)
+        else:
+            homes_to_return += scrape_immobiliare(get_soup(query_url), supported_site_conf)
+    return homes_to_return
 
 
 def get_from_api_immobiliare(query_url) -> [Home]:
@@ -101,6 +107,14 @@ def scrape_immobiliare(soup, site: Site) -> [Home]:
             pass
         # add element
         homes_to_return.append(home_item)
+    return homes_to_return
+
+
+# idealista
+def get_data_idealista(query_urls: [str], supported_site_conf) -> [Home]:
+    homes_to_return = []
+    for query_url in query_urls:
+        homes_to_return += scrape_idealista(get_soup(query_url), supported_site_conf)
     return homes_to_return
 
 
