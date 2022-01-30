@@ -19,8 +19,8 @@ def get_soup(url):
 def scrape_data() -> [Home]:
     logging.info("start to get data from searches")
     searches: [Search] = get_searches()
-    homes_to_return = []
     for search in searches:
+        homes_to_return = []
         logging.info("start to elaborate search %s", search.title)
         for site in search.sites:
             if site.query_urls and len(site.query_urls) > 0:
