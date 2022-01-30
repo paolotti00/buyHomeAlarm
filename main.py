@@ -6,7 +6,7 @@ from functions_email import Mail, render_email_template
 from functions_repository import Repository
 from functions_scrape import scrape_data, get_only_the_new_homes, create_message
 
-emails_to_send = ["pa.tripodi@hotmail.it"]
+emails_to_send = ["pa.tripodi@hotmail.it", "denisediprima@virgilio.it"]
 
 scheduler = Scheduler()
 
