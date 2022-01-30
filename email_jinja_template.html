@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html>
 <body>
-<p style="color: #5e9ca0;"><span style="color: #000000;">Ciao ho trovato {{n_case}} nuove case!</span></p>
+<p style="color: #5e9ca0;"><span style="color: #000000;">Ciao ho trovato {{n_homes}} nuove case!</span></p>
 <p style="color: #5e9ca0;">&nbsp;</p>
-    {% for zone in zones %}
-    <p style="color: #5e9ca0;"><strong><span style="color: #000000;">Da :&nbsp;</span></strong><span style="color: #000000;">{{ zone.title}}</span></p>
-    <p style="color: #5e9ca0;"><strong><span style="color: #000000;">Descrizione breve: </span></strong><span style="color: #000000;">{{ zone.description}}</span></p>
-        {% for home in zone.homes %}
+    {% for search in searches %}
+    <p style="color: #5e9ca0;"><strong><span style="color: #000000;">Da :&nbsp;</span></strong><span style="color: #000000;">{{ search.title}}</span></p>
+    <p style="color: #5e9ca0;"><strong><span style="color: #000000;">Descrizione breve: </span></strong><span style="color: #000000;">{{ search.description}}</span></p>
+        {% for home in search.homes %}
             <p style="color: #5e9ca0;"><strong><span style="color: #000000;">Da :&nbsp;</span></strong><span style="color: #000000;">{{ home.origin_site }}</span></p>
             <p style="color: #5e9ca0;"><strong><span style="color: #000000;">Descrizione breve: </span></strong><span style="color: #000000;">{{ home.description_short }}</span></p>
             <table style="height: 72px; width: 100%; border-collapse: collapse; border-style: none;" border="1">

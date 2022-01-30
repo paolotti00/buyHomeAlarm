@@ -24,7 +24,7 @@ def main():
         message = create_message(research_to_send)
         # send email
         Mail().send(emails_to_send, get_config().email.subject,
-                    render_email_template("email_jinja_template.html", zones=searches))
+                    render_email_template("email_jinja_template.html", searches=searches, n_homes=len(homes)))
         # save in db
         repository = Repository()
         repository.save_many_homes(homes)
@@ -38,3 +38,4 @@ config = get_config()
 scheduler.add_interval_job(main, minutes=config.tech_conf.scheduler_time_minutes)
 scheduler.start()
 start_sched_and_keep_alive(scheduler)
+# main()
