@@ -144,7 +144,7 @@ def scrape_idealista(soup, site: Site):
         except (AttributeError, TypeError, KeyError) as e:
             pass
         try:
-            home_item.title = item.find("p", {"class": "item-highlight-phrase"})["title"]
+            home_item.title = item.find("a", {"class": "item-link"})["title"]
         except (AttributeError, TypeError, KeyError) as e:
             pass
         try:

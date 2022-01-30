@@ -10,10 +10,10 @@ email:
     port: 465
 supported_sites_conf :
   - site_name: "immobiliare"
-    base_urls: ""
+    base_url: ""
     api_case_string: "search-list"
   - site_name: "idealista"
-    base_ulrs: "https://www.idealista.it/"
+    base_url: "https://www.idealista.it"
 searches:
   - title: "zona pietralata (nuova itor)"
     description: ""
