@@ -180,7 +180,7 @@ def get_only_the_new_homes(homes: [Home]):
     repository = Repository()
     homes_to_return = []
     for home in homes:
-        if not home or len(repository.get_home(home.id)) > 0:
+        if not home or home.id is None or len(repository.get_home(home.id)) > 0:
             continue
         homes_to_return.append(home)
     return homes_to_return

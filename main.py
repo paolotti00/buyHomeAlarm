@@ -15,19 +15,21 @@ def main():
     logging.info("start")
     searches = scrape_data()
     research_to_send: [] = []
+    n_homes = 0
     for research in searches:
-        homes = get_only_the_new_homes(research.homes)
-        if len(homes) > 0:
+        research.homes = get_only_the_new_homes(research.homes)
+        if len(research.homes) > 0:
+            n_homes = n_homes + len(research.homes)
             research_to_send.append(research)
     if len(research_to_send) > 0:
         # create message
         message = create_message(research_to_send)
         # send email
         Mail().send(emails_to_send, get_config().email.subject,
-                    render_email_template("email_jinja_template.html", searches=searches, n_homes=len(homes)))
+                    render_email_template("email_jinja_template.html", searches=searches, n_homes=n_homes))
         # save in db
         repository = Repository()
-        repository.save_many_homes(homes)
+        repository.save_many_homes(research.homes)
         repository.save_message(message)
     logging.info("end")
 
