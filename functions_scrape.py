@@ -177,12 +177,14 @@ def scrape_idealista(soup, site: Site):
 
 
 def get_only_the_new_homes(homes: [Home]):
+    logging.info("evaluating how many new homes of these %s homes", len(homes))
     repository = Repository()
     homes_to_return = []
     for home in homes:
         if not home or home.id is None or len(repository.get_home(home.id)) > 0:
             continue
         homes_to_return.append(home)
+    logging.info("there are %s new homes from %s homes", len(homes_to_return), len(homes))
     return homes_to_return
 
 
