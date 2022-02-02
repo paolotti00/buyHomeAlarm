@@ -63,11 +63,11 @@ searches:
         query_urls:
           - "https://www.idealista.it/aree/vendita-case/con-prezzo_300000,dimensione_80,ultimo-piano,piani-intermedi,aste_no/?shape=%28%28og__GicfkA%7BiCyv%40ixAklB%7C%5E%7D_Dlt%40mb%40pDqs%40%60r%40iKti%40a%5DvhBdfCwY%7EoAob%40hoF%29%29"
   - title: "citta giardino"
-      description: ""
-      sites:
-        - site_name: "immobiliare"
-          query_urls:
-            - "https://www.immobiliare.it/vendita-case/roma/citta-giardino/con-piani-intermedi/?criterio=rilevanza&prezzoMassimo=300000&superficieMinima=80&tipoProprieta=1&noAste=1&fasciaPiano[]=30"
-        - site_name: "idealista"
-          query_urls:
-            - "https://www.idealista.it/aree/vendita-case/con-prezzo_300000,dimensione_80,ultimo-piano,piani-intermedi,aste_no/?shape=%28%28ee%7D%7EFoclkA%7Bn%40ifAvQ%7Di%40%60t%40bOvIfv%40ua%40zi%40%29%29"
+    description: ""
+    sites:
+      - site_name: "immobiliare"
+        query_urls:
+          - "https://www.immobiliare.it/vendita-case/roma/citta-giardino/con-piani-intermedi/?criterio=rilevanza&prezzoMassimo=300000&superficieMinima=80&tipoProprieta=1&noAste=1&fasciaPiano[]=30"
+      - site_name: "idealista"
+        query_urls:
+          - "https://www.idealista.it/aree/vendita-case/con-prezzo_300000,dimensione_80,ultimo-piano,piani-intermedi,aste_no/?shape=%28%28ee%7D%7EFoclkA%7Bn%40ifAvQ%7Di%40%60t%40bOvIfv%40ua%40zi%40%29%29"
