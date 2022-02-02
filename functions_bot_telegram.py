@@ -6,13 +6,11 @@ from telegram.ext.messagehandler import MessageHandler
 from telegram.ext.filters import Filters
 import logging
 
-updater = Updater("5138319576:AAE0Blx0DTpEvgHCmezgENqexbaC2HkMFAI",
-                  use_context=True)
+updater = Updater("5138319576:AAE0Blx0DTpEvgHCmezgENqexbaC2HkMFAI", use_context=True)
 
 
 def start(update: Update, context: CallbackContext):
-    update.message.reply_text(
-        "ciao Denise")
+    update.message.reply_text("ciao Denise")
 
 
 def help(update: Update, context: CallbackContext):
@@ -20,25 +18,24 @@ def help(update: Update, context: CallbackContext):
 
 
 def unknown_text(update: Update, context: CallbackContext):
-    update.message.reply_text(
-        "Sorry I can't recognize you , you said '%s'" % update.message.text)
+    update.message.reply_text("Sorry I can't recognize you , you said '%s'" % update.message.text)
 
 
 def unknown(update: Update, context: CallbackContext):
-    update.message.reply_text(
-        "Sorry '%s' is not a valid command" % update.message.text)
+    update.message.reply_text("Sorry '%s' is not a valid command" % update.message.text)
+
+
+def send_text(msg):
+    updater.bot.send_message(chat_id='-651042114', text=msg)
 
 
 updater.dispatcher.add_handler(CommandHandler('start', start))
 updater.dispatcher.add_handler(MessageHandler(Filters.text, unknown))
-updater.dispatcher.add_handler(MessageHandler(
-    # Filters out unknown commands
-    Filters.command, unknown))
-
+# Filters out unknown commands
+updater.dispatcher.add_handler(MessageHandler(Filters.command, unknown))
 # Filters out unknown messages.
 updater.dispatcher.add_handler(MessageHandler(Filters.text, unknown_text))
 
 
 def start_bot():
     updater.start_polling()
-
