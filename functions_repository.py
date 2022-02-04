@@ -1,4 +1,4 @@
-from mongita import MongitaClientDisk
+import pymongo
 from classes import Message
 import logging
 
@@ -12,10 +12,10 @@ def save_many(collection, list_data: []):
 
 class Repository:
     def __init__(self):
-        self.client = MongitaClientDisk("./._db")
-        self.db = self.client.db
-        self.messages_collection = self.db.messages_collection
-        self.homes_collection = self.db.homes_collection
+        client = pymongo.MongoClient("mongodb+srv://buyhomealarm_app_pi_dev:AcCyAZyX6H9H3EJ@cluster0.oh329.mongodb.net/buyhomealarm_db?retryWrites=true&w=majority")
+        mydb = client.buyhomealarm_db
+        self.messages_collection = mydb["messages"]
+        self.homes_collection = mydb["home"]
 
     def save_many_homes(self, list_of_data: []):
         logging.info("saving many homes: %s homes", len(list_of_data))
