@@ -27,6 +27,7 @@ class Search:
     description = None
     sites: [Site] = None
     homes: [Home] = None
+    # chatId: str = None
 
 
 class Message:
@@ -62,3 +63,21 @@ class Config:
     sites: [Site] = None
     supported_sites_conf: [Site] = None
     searches: [Search] = None
+
+
+# telegram bot
+
+class Scheduler:
+    searchesId: [str] = None
+    target_emails: [str] = None
+    active: bool = None
+    n_minutes_timer: int = None
+    send_email: bool = None
+    send_in_chat: bool = None
+    chatId: int = None
+
+
+class Chat:
+    id = None
+    date_of_creation = None
+    schedulersId: [str] = None

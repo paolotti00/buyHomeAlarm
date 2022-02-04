@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from apscheduler.scheduler import Scheduler
 import logging
 from fuctions_utility import start_sched_and_keep_alive
-from functions_bot_telegram import start_bot
+import functions_bot_telegram as bot_telegram
 from functions_config import get_config
 from functions_email import Mail, render_email_template
 from functions_repository import Repository
@@ -49,5 +49,7 @@ scheduler.add_interval_job(main, minutes=config.tech_conf.scheduler_time_minutes
                            # added 5 seconds in order to do the first run
                            start_date=datetime.now() + timedelta(seconds=5))
 scheduler.start()
-#start_sched_and_keep_alive(scheduler)
-start_bot()
+# start_sched_and_keep_alive(scheduler)
+bot_telegram.start_bot()
+bot_telegram.send_text("test")
+bot_telegram.send_text("ciao")

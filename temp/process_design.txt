@@ -1,0 +1,37 @@
+normal flow
+- start py
+- get schedulers
+- get searches from schedulers
+- search home of searches
+- check the new home
+- send new home to chat/email
+
+---------- add new search by bot (add new scheduler)
+- /addSearches
+- bot ask the detail for the creation of search
+-- search name
+-- search description
+--- search site (maybe from a set of site? (the supported site)
+---- search queries_urls (multiple for each site)
+- does the chat already have an scheduler?
+-- yes - add the new search to existent scheduler
+-- no  - bot ask the detail for the scheduler
+--- how many minutes it is triggered?
+--- does he want also the email?
+---- add the new scheduler
+--- add the new search in the new scheduler
+
+----------- edit search by bot
+- /editSearches
+- bot ask which is the operation that the user want to be
+- does the user want to modify search?
+-- the bot ask witch is the search that the user want to modify
+-- does the user want to modify the name of the search?
+-- does the user want to add some query urls?
+--- which site does the user want to modify with this adding? (maybe this is could be automated?)
+---- the bot ask the new query url
+--- does the user want to delete some query ulrs?
+---- the bot ask witch is the query to delete
+
+----------- delete search by bot
+- bot ask which is the search to remove
