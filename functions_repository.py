@@ -1,4 +1,5 @@
 import pymongo
+import functions_config as func_conf
 from classes import Message
 import logging
 
@@ -12,7 +13,7 @@ def save_many(collection, list_data: []):
 
 class Repository:
     def __init__(self):
-        client = pymongo.MongoClient("mongodb+srv://buyhomealarm_app_pi_dev:AcCyAZyX6H9H3EJ@cluster0.oh329.mongodb.net/buyhomealarm_db?retryWrites=true&w=majority")
+        client = pymongo.MongoClient(func_conf.get_db_config().connection_string)
         mydb = client.buyhomealarm_db
         self.messages_collection = mydb["messages"]
         self.homes_collection = mydb["home"]

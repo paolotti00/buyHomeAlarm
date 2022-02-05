@@ -1,0 +1,75 @@
+tech_conf:
+  date_pattern: "%y-%m-%d-%h:%m:%s"
+  scheduler_time_minutes: 120
+email:
+  subject: "nuovi annunci speriamo bene!"
+  sender:
+    email: "paolo.varie00@gmail.com"
+    password: "paolo.varie0027..06..88"
+    domain_name: "smtp.gmail.com"
+    port: 465
+db:
+  connection_string: "mongodb+srv://buyhomealarm_app_pi:z3jFXk69sdD8AZf@cluster0.48mwk.mongodb.net/buyhomealarm_db?retryWrites=true&w=majority"
+supported_sites_conf :
+  - site_name: "immobiliare"
+    base_url: ""
+    api_case_string: "search-list"
+  - site_name: "idealista"
+    base_url: "https://www.idealista.it"
+searches:
+  - title: "zona pietralata (nuova itor)"
+    description: ""
+    sites:
+      - site_name: "immobiliare"
+        query_urls:
+          - "https://www.immobiliare.it/vendita-case/roma/pietralata/con-piani-intermedi/?criterio=rilevanza&prezzoMassimo=300000&superficieMinima=80"
+      - site_name: "idealista"
+        query_urls:
+          - "https://www.idealista.it/aree/vendita-case/con-prezzo_280000,dimensione_80,piani-intermedi/?shape=%28%28yu%7B%7EFmookAyAs%5EkCsg%40%60%7C%40aVdD%7Er%40yDn%5Cgt%40xL%29%29"
+  - title: "ciampino"
+    description: ""
+    sites:
+      - site_name: "immobiliare"
+        query_urls:
+          - "https://www.immobiliare.it/vendita-case/ciampino/con-piani-intermedi/?criterio=rilevanza&prezzoMassimo=280000"
+      - site_name: "idealista"
+        query_urls:
+          - "https://www.idealista.it/vendita-case/ciampino-roma/con-prezzo_280000,dimensione_80,piani-intermedi/"
+  - title: "bracciano e anguillaria"
+    description: ""
+    sites:
+      - site_name: "immobiliare"
+        query_urls:
+          - "https://www.immobiliare.it/vendita-case/anguillara-sabazia/con-piani-intermedi/?criterio=rilevanza&prezzoMassimo=250000&superficieMinima=80"
+          - "https://www.immobiliare.it/vendita-case/bracciano/con-piani-intermedi/?criterio=rilevanza&prezzoMassimo=250000&superficieMinima=80"
+      - site_name: "idealista"
+        query_urls:
+          - "https://www.idealista.it/vendita-case/bracciano-roma/con-prezzo_250000,dimensione_80/"
+          - "https://www.idealista.it/vendita-case/anguillara-sabazia-roma/con-prezzo_240000,dimensione_80/"
+  - title: "cassia, tomba di nerone, due ponti"
+    description: "sogno la cassia"
+    sites:
+      - site_name: "immobiliare"
+        query_urls:
+          - "https://www.immobiliare.it/vendita-case/roma/con-piani-intermedi/?criterio=rilevanza&prezzoMassimo=300000&superficieMinima=80&fasciaPiano[]=30&idMZona[]=10160&idQuartiere[]=10835&idQuartiere[]=10836&idQuartiere[]=12743"
+      - site_name: "idealista"
+        query_urls:
+          - "https://www.idealista.it/aree/vendita-case/con-prezzo_300000,dimensione_80,ultimo-piano,piani-intermedi,aste_no/?shape=%28%28%7Brd_G_k%7BjAqXmeEp%7BAoyCtrBl%7BBpPfo%40ug%40v%7CCq%7ECnU%29%29"
+  - title: "nuovo salario"
+    description: ""
+    sites:
+      - site_name: "immobiliare"
+        query_urls:
+          - "https://www.immobiliare.it/vendita-case/roma/nuovo-salario/con-piani-intermedi/?criterio=rilevanza&prezzoMassimo=300000&superficieMinima=80&fasciaPiano[]=30"
+      - site_name: "idealista"
+        query_urls:
+          - "https://www.idealista.it/aree/vendita-case/con-prezzo_300000,dimensione_80,ultimo-piano,piani-intermedi,aste_no/?shape=%28%28og__GicfkA%7BiCyv%40ixAklB%7C%5E%7D_Dlt%40mb%40pDqs%40%60r%40iKti%40a%5DvhBdfCwY%7EoAob%40hoF%29%29"
+  - title: "citta giardino"
+    description: ""
+    sites:
+      - site_name: "immobiliare"
+        query_urls:
+          - "https://www.immobiliare.it/vendita-case/roma/citta-giardino/con-piani-intermedi/?criterio=rilevanza&prezzoMassimo=300000&superficieMinima=80&tipoProprieta=1&noAste=1&fasciaPiano[]=30"
+      - site_name: "idealista"
+        query_urls:
+          - "https://www.idealista.it/aree/vendita-case/con-prezzo_300000,dimensione_80,ultimo-piano,piani-intermedi,aste_no/?shape=%28%28ee%7D%7EFoclkA%7Bn%40ifAvQ%7Di%40%60t%40bOvIfv%40ua%40zi%40%29%29"
