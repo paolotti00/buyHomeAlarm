@@ -3,8 +3,8 @@ from datetime import datetime, timedelta
 from apscheduler.scheduler import Scheduler
 import logging
 from fuctions_utility import start_sched_and_keep_alive
+from functions_config import get_config, config_app
 import functions_bot_telegram as bot_telegram
-from functions_config import get_config
 from functions_email import Mail, render_email_template
 from functions_repository import Repository
 from functions_scrape import scrape_data, get_only_the_new_homes, create_message

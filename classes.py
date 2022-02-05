@@ -51,6 +51,8 @@ class Email:
     subject = None
     sender: Sender = None
 
+class DB:
+    connection_string: str = None
 
 class TechConf:
     date_pattern = None
@@ -60,6 +62,7 @@ class TechConf:
 class Config:
     tech_conf: TechConf = None
     email: Email = None
+    db: DB = None
     sites: [Site] = None
     supported_sites_conf: [Site] = None
     searches: [Search] = None

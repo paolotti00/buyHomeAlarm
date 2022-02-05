@@ -8,6 +8,8 @@ email:
     password: "paolo.varie0027..06..88"
     domain_name: "smtp.gmail.com"
     port: 465
+db:
+  connection_string: "mongodb+srv://buyhomealarm_app_pi_dev:AcCyAZyX6H9H3EJ@cluster0.oh329.mongodb.net/buyhomealarm_db?retryWrites=true&w=majority"
 supported_sites_conf :
   - site_name: "immobiliare"
     base_url: ""
