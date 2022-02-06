@@ -1,5 +1,17 @@
 # classes
+from bson import ObjectId
+
+
+def common_init(self, d=None):
+    if d is not None:
+        for key, value in d.items():
+            setattr(self, key, value)
+
+
 class Home:
+    def __init__(self, d=None):
+        common_init(self, d)
+
     id = None
     title = None
     price = None
@@ -17,6 +29,9 @@ class Home:
 
 
 class Site:
+    def __init__(self, d=None):
+        common_init(self, d)
+
     site_name = None
     base_url = None
     query_urls: [str] = None
@@ -24,6 +39,9 @@ class Site:
 
 
 class Search:
+    def __init__(self, d=None):
+        common_init(self, d)
+
     title = None
     description = None
     sites: [Site] = None
@@ -32,6 +50,9 @@ class Search:
 
 
 class Message:
+    def __init__(self, d=None):
+        common_init(self, d)
+
     is_sent = None
     sent_date = None
     creation_date = None
@@ -42,6 +63,9 @@ class Message:
 
 
 class Sender:
+    def __init__(self, d=None):
+        common_init(self, d)
+
     email = None
     password = None
     domain_name = None
@@ -49,20 +73,32 @@ class Sender:
 
 
 class Email:
+    def __init__(self, d=None):
+        common_init(self, d)
+
     subject = None
     sender: Sender = None
 
 
 class DB:
+    def __init__(self, d=None):
+        common_init(self, d)
+
     connection_string: str = None
 
 
 class TechConf:
+    def __init__(self, d=None):
+        common_init(self, d)
+
     date_pattern = None
     scheduler_time_minutes = None
 
 
 class Config:
+    def __init__(self, d=None):
+        common_init(self, d)
+
     tech_conf: TechConf = None
     email: Email = None
     db: DB = None
@@ -74,17 +110,28 @@ class Config:
 # telegram bot
 
 class Job:
-    id = None
-    searchesId: [str] = None
+    def __init__(self, d=None):
+        common_init(self, d)
+
+    _id: ObjectId = None
+    searchesId: [ObjectId] = None
     target_emails: [str] = None
     active: bool = None
     n_minutes_timer: int = None
     send_email: bool = None
     send_in_chat: bool = None
-    chatId: int = None
+    chat_id: ObjectId = None
+
+    @property
+    def id(self):
+        return self._id
 
 
 class Chat:
+    def __init__(self, d=None):
+        common_init(self, d)
+
     id = None
+    telegram_id = None
     date_of_creation = None
-    schedulersId: [str] = None
+    jobs_id: [ObjectId] = None
