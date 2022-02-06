@@ -1,3 +1,4 @@
+# classes
 class Home:
     id = None
     title = None
@@ -51,8 +52,10 @@ class Email:
     subject = None
     sender: Sender = None
 
+
 class DB:
     connection_string: str = None
+
 
 class TechConf:
     date_pattern = None
@@ -70,7 +73,8 @@ class Config:
 
 # telegram bot
 
-class Scheduler:
+class Job:
+    id = None
     searchesId: [str] = None
     target_emails: [str] = None
     active: bool = None

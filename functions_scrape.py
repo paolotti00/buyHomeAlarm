@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 
 from classes import Home, Message, Site, Search
 from constants import IMMOBILIARE_SITE_NAME, IDEALISTA_SITE_NAME
-from functions_config import get_config, get_searches, get_supported_site_conf
+from functions_config import get_config, get_supported_site_conf
 from functions_repository import Repository
 
 
@@ -16,9 +16,9 @@ def get_soup(url):
     return BeautifulSoup(requests.get(url, headers=headers).text, "html5lib")
 
 
-def scrape_data() -> [Home]:
+def scrape_data(job_id) -> [Search]:
     logging.info("start to get data from searches")
-    searches: [Search] = get_searches()
+    searches: [Search] = Repository.get_searches_from_job_id(job_id)
     for search in searches:
         homes_to_return = []
         logging.info("start to elaborate search %s", search.title)
@@ -186,14 +186,6 @@ def get_only_the_new_homes(homes: [Home]):
         homes_to_return.append(home)
     logging.info("there are %s new homes from %s homes", len(homes_to_return), len(homes))
     return homes_to_return
-
-
-def create_message(searches: [Search]):
-    message = Message()
-    message.is_sent = False
-    # message.creation_date = datetime.today().strftime(get_config().conf.date_pattern) #todo fix invalid format name
-    # message.zones = zones #fixme bson error
-    return message
 
 
 def check_if_already_sent_it():
