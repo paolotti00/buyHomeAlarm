@@ -12,7 +12,8 @@ class Home:
     def __init__(self, d=None):
         common_init(self, d)
 
-    id = None
+    _id: ObjectId = None
+    id_from_site = None
     title = None
     price = None
     zone = None
@@ -26,6 +27,10 @@ class Home:
     link_detail = None
     origin_site = None
     date = None
+
+    @property
+    def id_mongo(self):
+        return self._id
 
 
 class Site:
@@ -42,11 +47,16 @@ class Search:
     def __init__(self, d=None):
         common_init(self, d)
 
+    _id: ObjectId = None
     title = None
     description = None
     sites: [Site] = None
     homes: [Home] = None
     # chatId: str = None
+
+    @property
+    def id_mongo(self):
+        return self._id
 
 
 class Message:
@@ -123,7 +133,7 @@ class Job:
     chat_id: ObjectId = None
 
     @property
-    def id(self):
+    def id_mongo(self):
         return self._id
 
 
@@ -131,7 +141,11 @@ class Chat:
     def __init__(self, d=None):
         common_init(self, d)
 
-    id = None
+    _id = None
     telegram_id = None
     date_of_creation = None
     jobs_id: [ObjectId] = None
+
+    @property
+    def id_mongo(self):
+        return self._id
