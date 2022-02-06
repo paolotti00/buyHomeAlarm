@@ -5,10 +5,8 @@ from classes import Job
 from functions_repository import Repository
 
 
-repository = Repository()
-
-
 def configure_jobs(scheduler: Scheduler, callback) -> Scheduler:
+    repository = Repository()
     jobs: [Job] = repository.get_active_jobs()
     if len(jobs) > 0:
         logging.info("found %s active jobs", len(jobs))
@@ -17,5 +15,5 @@ def configure_jobs(scheduler: Scheduler, callback) -> Scheduler:
                                        start_date=datetime.now() + timedelta(seconds=5))
         logging.info("all jobs was configured")
     else:
-        logging.info("no active jobs found", len(jobs))
+        logging.info("no active jobs found")
     return scheduler

@@ -1,3 +1,5 @@
+import ssl
+
 import pymongo
 import functions_config as func_conf
 from classes import Message, Job, Search
@@ -13,7 +15,7 @@ def save_many(collection, list_data: []):
 
 class Repository:
     def __init__(self):
-        client = pymongo.MongoClient(func_conf.get_db_config().connection_string)
+        client = pymongo.MongoClient(func_conf.get_db_config().connection_string, ssl_cert_reqs=ssl.CERT_NONE)
         mydb = client.buyhomealarm_db
         self.messages_collection = mydb["messages"]
         self.homes_collection = mydb["home"]
