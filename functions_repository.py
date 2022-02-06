@@ -1,8 +1,9 @@
 import ssl
 
+from munch import Munch
 import pymongo
 import functions_config as func_conf
-from classes import Message, Job, Search
+from classes import Message, Job, Search, Home
 import logging
 
 
@@ -11,6 +12,13 @@ def save_many(collection, list_data: []):
         collection.insert_one(vars(data))
     # print(collection.count_documents({}))
     # print(list(collection.find({})))
+
+
+def from_cursors_to_list_object(cursors, class_type):
+    list_to_return: [] = []
+    for cursor in cursors:
+        list_to_return.append(class_type(cursor))
+    return list_to_return
 
 
 class Repository:
@@ -26,27 +34,31 @@ class Repository:
         logging.info("saving many homes: %s homes", len(list_of_data))
         save_many(self.homes_collection, list_of_data)
 
-    def get_home(self, home_id):
-        result = self.homes_collection.find({'id': {'$eq': home_id}})
-        return list(result)
+    def get_home(self, id_from_site) -> [Home]:
+        result = self.homes_collection.find({'id_from_site': {'$eq': id_from_site}})
+        return from_cursors_to_list_object(result, Home)
 
     def get_active_jobs(self) -> [Job]:
-        result = self.jobs_collection.find({'active': {'$eq': 'true'}})
-        return list(result)
+        result = self.jobs_collection.find({'active': {'$eq': True}})
+        return from_cursors_to_list_object(result, Job)
 
-    def get_job(self, job_id):
-        result = self.jobs_collection.find({'id': {'$eq': job_id}})
-        return list(result)
+    def get_job(self, job_id_mongo) -> Job:
+        result = self.jobs_collection.find_one({'_id': {'$eq': job_id_mongo}})
+        return Job(result)
+
+    def get_search(self, search_id_mongo):
+        result = self.searches_collection.find_one({'_id': {'$eq': search_id_mongo}})
+        return Search(result)
 
     def get_searches_from_job_id(self, job_id) -> [Search]:
         searches: [Search] = []
-        searches_ids = self.jobs_collection.find({'_id': {'$eq': job_id}}).get['searchesId']
-        for searches_id in searches_ids:
-            searches.append(list(self.jobs_collection.find({'_id': {'$eq': searches_id}})))
+        searches_ids = self.get_job(job_id).searches_id
+        for searches_id_mongo in searches_ids:
+            searches.append(self.get_search(searches_id_mongo))
         return searches
 
     def get_searches(self, searches_ids: []) -> [Search]:
         searches: [Search] = []
         for searches_id in searches_ids:
             searches.append(list(self.jobs_collection.find({'_id': {'$eq': searches_id}})))
-        return searches
+        return from_cursors_to_list_object(searches, Search)

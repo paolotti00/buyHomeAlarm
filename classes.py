@@ -5,6 +5,16 @@ from bson import ObjectId
 def common_init(self, d=None):
     if d is not None:
         for key, value in d.items():
+            print("key --> " + key + " " + "value --> " + str(value))
+            if isinstance(value, list) and isinstance(value[0], dict):
+                print("dentro if")
+                for item in value:
+                    common_init(getattr(type(self), key)[0], dict(item))
+            print(type(value))
+            print("---------- set attr key --> " + key + " value --> " + str(value))
+            if isinstance(value,list):
+                if isinstance(value[0],dict):
+                    continue
             setattr(self, key, value)
 
 
@@ -37,9 +47,9 @@ class Site:
     def __init__(self, d=None):
         common_init(self, d)
 
-    site_name = None
+    site_name: str
     base_url = None
-    query_urls: [str] = None
+    query_urls: [str] = [str]
     api_case_string = None
 
 
@@ -50,8 +60,8 @@ class Search:
     _id: ObjectId = None
     title = None
     description = None
-    sites: [Site] = None
-    homes: [Home] = None
+    sites: [Site] = [Site()]
+
     # chatId: str = None
 
     @property
@@ -145,6 +155,7 @@ class Chat:
     telegram_id = None
     date_of_creation = None
     jobs_id: [ObjectId] = None
+    homes_found_id: [ObjectId] = None
 
     @property
     def id_mongo(self):

@@ -17,8 +17,9 @@ def get_soup(url):
 
 
 def scrape_data(job_id) -> [Search]:
+    repository = Repository()
     logging.info("start to get data from searches")
-    searches: [Search] = Repository.get_searches_from_job_id(job_id)
+    searches: [Search] = repository.get_searches_from_job_id(job_id)
     for search in searches:
         homes_to_return = []
         logging.info("start to elaborate search %s", search.title)

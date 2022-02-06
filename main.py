@@ -16,12 +16,13 @@ emails_to_send = ["pa.tripodi@hotmail.it"]
 scheduler = Scheduler()
 
 
-def main(job_id):
+def main(job_id_mongo):
+    repository = Repository()
     research_to_send: [] = []
     n_homes = 0
-    job: Job = Repository.get_job(job_id)
-    logging.info("start job %s", job_id)
-    searches = scrape_data(job_id)
+    job: Job = repository.get_job(job_id_mongo)
+    logging.info("start job %s", job_id_mongo)
+    searches = scrape_data(job_id_mongo)
     for research in searches:
         research.homes = get_only_the_new_homes(research.homes)
         if len(research.homes) > 0:
@@ -39,7 +40,6 @@ def main(job_id):
             # todo
             logging.info("sending in chat with id s%", job.chat_id)
         # save in db
-        repository = Repository()
         for research in research_to_send:
             repository.save_many_homes(research.homes)
     else:
