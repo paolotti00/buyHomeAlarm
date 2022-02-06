@@ -51,6 +51,7 @@ def main(job_id):
 logging.basicConfig(filename='app.log', filemode='a', format='%(asctime)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
 logging.info("start")
+config_app()
 config = get_config()
 scheduler = configure_jobs(scheduler, main)
 scheduler.start()
