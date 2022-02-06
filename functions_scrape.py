@@ -65,7 +65,7 @@ def scrape_immobiliare(soup, site: Site) -> [Home]:
         home_item.origin_site = site.site_name
         # decode
         try:
-            home_item.id = site.site_name + "_" + item["id"]
+            home_item.id_from_site = site.site_name + "_" + item["id"]
         except (AttributeError, TypeError, KeyError) as e:
             # do nothing and go ahead
             # print(e)
@@ -136,7 +136,7 @@ def scrape_idealista(soup, site: Site):
 
         # decode
         try:
-            home_item.id = site.site_name + "_" + item["data-adid"]
+            home_item.id_from_site = site.site_name + "_" + item["data-adid"]
         except (AttributeError, TypeError, KeyError) as e:
             pass
         try:
@@ -181,7 +181,7 @@ def get_only_the_new_homes(homes: [Home]):
     repository = Repository()
     homes_to_return = []
     for home in homes:
-        if not home or home.id is None or len(repository.get_home(home.id)) > 0:
+        if not home or home.id_from_site is None or len(repository.get_home(home.id_from_site)) > 0:
             continue
         homes_to_return.append(home)
     logging.info("there are %s new homes from %s homes", len(homes_to_return), len(homes))

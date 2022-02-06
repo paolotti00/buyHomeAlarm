@@ -124,7 +124,7 @@ class Job:
         common_init(self, d)
 
     _id: ObjectId = None
-    searchesId: [ObjectId] = None
+    searches_id: [ObjectId] = None
     target_emails: [str] = None
     active: bool = None
     n_minutes_timer: int = None

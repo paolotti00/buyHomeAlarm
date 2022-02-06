@@ -51,8 +51,10 @@ def get_config() -> Config:
 def get_email_config():
     return get_config().email
 
+
 def get_db_config():
-    return  get_config().db
+    return get_config().db
+
 
 def get_searches() -> [Search]:
     return get_config().searches

@@ -37,7 +37,7 @@ def main(job_id):
                         render_email_template("email_jinja_template.html", searches=research_to_send, n_homes=n_homes))
         if job.send_in_chat:
             # todo
-            logging.info("sending in chat with id s%", job.chatId)
+            logging.info("sending in chat with id s%", job.chat_id)
         # save in db
         repository = Repository()
         for research in research_to_send:
