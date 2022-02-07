@@ -4,7 +4,7 @@ from datetime import datetime
 import requests
 from bs4 import BeautifulSoup
 
-from classes import Home, Message, Site, Search
+from classes import Home, Site, Search
 from constants import IMMOBILIARE_SITE_NAME, IDEALISTA_SITE_NAME
 from functions_config import get_config, get_supported_site_conf
 from functions_repository import Repository
@@ -29,9 +29,9 @@ def scrape_data(job_id) -> [Search]:
                 if site.site_name.casefold() == IMMOBILIARE_SITE_NAME.casefold():
                     homes_to_return += get_data_immobiliare(site.query_urls, get_supported_site_conf(site.site_name))
                 elif site.site_name.casefold() == IDEALISTA_SITE_NAME.casefold():
-                    homes_to_return += get_data_idealista(site.query_urls,get_supported_site_conf(site.site_name))
+                    homes_to_return += get_data_idealista(site.query_urls, get_supported_site_conf(site.site_name))
             else:
-                logging.info("no query_urls in search %s site %s",search.title, site.site_name)
+                logging.info("no query_urls in search %s site %s", search.title, site.site_name)
         search.homes = homes_to_return
         logging.info("finished search %s", search.title)
     logging.info("get data from searches finished, found %s in %s searches", len(homes_to_return), len(searches))
