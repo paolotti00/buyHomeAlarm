@@ -5,15 +5,12 @@ from bson import ObjectId
 def common_init(self, d=None):
     if d is not None:
         for key, value in d.items():
-            print("key --> " + key + " " + "value --> " + str(value))
+            # print("key --> " + key + " " + "value --> " + str(value))
             if isinstance(value, list) and isinstance(value[0], dict):
-                print("dentro if")
                 for item in value:
                     common_init(getattr(type(self), key)[0], dict(item))
-            print(type(value))
-            print("---------- set attr key --> " + key + " value --> " + str(value))
-            if isinstance(value,list):
-                if isinstance(value[0],dict):
+            if isinstance(value, list):
+                if isinstance(value[0], dict):
                     continue
             setattr(self, key, value)
 
@@ -49,7 +46,7 @@ class Site:
 
     site_name: str
     base_url = None
-    query_urls: [str] = [str]
+    query_urls: [str]
     api_case_string = None
 
 
@@ -67,16 +64,6 @@ class Search:
     @property
     def id_mongo(self):
         return self._id
-
-
-class Message:
-    def __init__(self, d=None):
-        common_init(self, d)
-
-    is_sent = None
-    sent_date = None
-    creation_date = None
-    zones: [Search] = None
 
 
 # configuration file
@@ -97,7 +84,7 @@ class Email:
         common_init(self, d)
 
     subject = None
-    sender: Sender = None
+    sender: Sender = Sender()
 
 
 class DB:
@@ -119,12 +106,12 @@ class Config:
     def __init__(self, d=None):
         common_init(self, d)
 
-    tech_conf: TechConf = None
-    email: Email = None
-    db: DB = None
-    sites: [Site] = None
-    supported_sites_conf: [Site] = None
-    searches: [Search] = None
+    tech_conf: TechConf = TechConf()
+    email: Email = Email()
+    db: DB = DB()
+    sites: [Site] = [Site()]
+    supported_sites_conf: [Site] = [Site()]
+    searches: [Search] = [Search()]
 
 
 # telegram bot
@@ -134,8 +121,8 @@ class Job:
         common_init(self, d)
 
     _id: ObjectId = None
-    searches_id: [ObjectId] = None
-    target_emails: [str] = None
+    searches_id: [ObjectId]
+    target_emails: [str]
     active: bool = None
     n_minutes_timer: int = None
     send_email: bool = None
@@ -154,8 +141,8 @@ class Chat:
     _id = None
     telegram_id = None
     date_of_creation = None
-    jobs_id: [ObjectId] = None
-    homes_found_id: [ObjectId] = None
+    jobs_id: [ObjectId]
+    homes_found_id: [ObjectId]
 
     @property
     def id_mongo(self):
