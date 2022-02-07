@@ -25,8 +25,8 @@ def unknown(update: Update, context: CallbackContext):
     update.message.reply_text("Sorry '%s' is not a valid command" % update.message.text)
 
 
-def send_text(msg):
-    updater.bot.send_message(chat_id='-651042114', text=msg)
+def send_text(msg, telegram_id):
+    updater.bot.send_message(chat_id=telegram_id, text=msg)
 
 
 updater.dispatcher.add_handler(CommandHandler('start', start))

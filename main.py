@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from apscheduler.scheduler import Scheduler
 import logging
 
-from classes import Job
+from classes import Job, Chat
 from functions_config import get_config, config_app
 import functions_bot_telegram as bot_telegram
 from functions_email import Mail, render_email_template
@@ -38,7 +38,9 @@ def main(job_id_mongo):
                         render_email_template("email_jinja_template.html", searches=research_to_send, n_homes=n_homes))
         if job.send_in_chat:
             # todo
-            logging.info("sending in chat with id s%", job.chat_id)
+            chat: Chat = repository.get_chat(job.chat_id)
+            logging.info("sending in chat with id %s", chat.telegram_id)
+            bot_telegram.send_text("ho trovato {} case".format(n_homes), chat.telegram_id)
         # save in db
         for research in research_to_send:
             repository.save_many_homes(research.homes)
@@ -57,5 +59,3 @@ scheduler = configure_jobs(scheduler, main)
 scheduler.start()
 # start_sched_and_keep_alive(scheduler)
 bot_telegram.start_bot()
-bot_telegram.send_text("test")
-bot_telegram.send_text("ciao")

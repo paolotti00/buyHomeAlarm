@@ -3,7 +3,7 @@ import ssl
 from munch import Munch
 import pymongo
 import functions_config as func_conf
-from classes import Job, Search, Home
+from classes import Job, Search, Home, Chat
 import logging
 
 
@@ -62,3 +62,7 @@ class Repository:
         for searches_id in searches_ids:
             searches.append(list(self.jobs_collection.find({'_id': {'$eq': searches_id}})))
         return from_cursors_to_list_object(searches, Search)
+
+    def get_chat(self, chat_id_mongo) -> Chat:
+        result = self.chat_collection.find_one({'_id': {'$eq': chat_id_mongo}})
+        return Chat(result)
