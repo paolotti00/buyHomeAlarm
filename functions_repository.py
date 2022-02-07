@@ -1,6 +1,5 @@
 import ssl
 
-from munch import Munch
 import pymongo
 import functions_config as func_conf
 from classes import Job, Search, Home, Chat
