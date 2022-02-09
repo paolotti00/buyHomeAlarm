@@ -8,4 +8,4 @@ DateTime~=4.3
 bs4~=0.0.1
 apscheduler~=2.0.1
 pymongo[srv]
-python-telegram-bot
+python-telegram-bot~=12.8
