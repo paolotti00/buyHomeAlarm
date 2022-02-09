@@ -20,6 +20,7 @@ def scrape_data(job_id) -> [Search]:
     repository = Repository()
     logging.info("start to get data from searches")
     searches: [Search] = repository.get_searches_from_job_id(job_id)
+    n_homes_found = 0
     for search in searches:
         homes_to_return = []
         logging.info("start to elaborate search %s", search.title)
@@ -33,8 +34,9 @@ def scrape_data(job_id) -> [Search]:
             else:
                 logging.info("no query_urls in search %s site %s", search.title, site.site_name)
         search.homes = homes_to_return
+        n_homes_found = n_homes_found + len(homes_to_return)
         logging.info("finished search %s", search.title)
-    logging.info("get data from searches finished, found %s in %s searches", len(homes_to_return), len(searches))
+    logging.info("get data from searches finished, found %s in %s searches", n_homes_found, len(searches))
     return searches
 
 

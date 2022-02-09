@@ -6,6 +6,7 @@ import logging
 from telegram.error import RetryAfter
 
 from classes import Job, Chat
+from fuctions_utility import start_sched_and_keep_alive
 from functions_config import get_config, config_app
 import functions_bot_telegram as bot_telegram
 from functions_email import Mail, render_email_template
@@ -75,4 +76,5 @@ config_app()
 config = get_config()
 scheduler = configure_jobs(scheduler, main)
 scheduler.start()
+# start_sched_and_keep_alive(scheduler)
 bot_telegram.start_bot()

@@ -2,6 +2,7 @@
 from bson import ObjectId
 
 
+# todo check if can delete this
 def common_init(self, d=None):
     if d is not None:
         for key, value in d.items():
@@ -35,10 +36,6 @@ class Home:
     origin_site = None
     date = None
 
-    @property
-    def id_mongo(self):
-        return self._id
-
 
 class Site:
     def __init__(self, d=None):
@@ -60,10 +57,6 @@ class Search:
     sites: [Site] = [Site()]
 
     # chatId: str = None
-
-    @property
-    def id_mongo(self):
-        return self._id
 
 
 # configuration file
@@ -129,10 +122,6 @@ class Job:
     send_in_chat: bool = None
     chat_id: ObjectId = None
 
-    @property
-    def id_mongo(self):
-        return self._id
-
 
 class Chat:
     def __init__(self, d=None):
@@ -143,7 +132,3 @@ class Chat:
     date_of_creation = None
     jobs_id: [ObjectId]
     homes_found_id: [ObjectId]
-
-    @property
-    def id_mongo(self):
-        return self._id

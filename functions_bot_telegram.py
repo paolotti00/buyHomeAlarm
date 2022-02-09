@@ -54,7 +54,9 @@ def send_home(chat_telegram_id, disable_notification, home: Home, search: Search
                        "\n" +
                        "<a href='{link_detail}'> vai a vederlo!</a>" +
                        "\n" +
-                       "\n")
+                       "\n" +
+                       "- \n" +
+                       "- \n")
                  .format(origin_site=home.origin_site,
                          search_title=search.title,
                          title=home.title,
