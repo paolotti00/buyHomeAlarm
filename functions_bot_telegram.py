@@ -40,20 +40,21 @@ def send_as_html(chat_telegram_id, text, disable_notification):
 # no callback funtions:
 
 def send_home(chat_telegram_id, disable_notification, home: Home, search: Search):
-    send_as_html(chat_telegram_id, disable_notification=disable_notification, text=("<b>da: </b> {origin_site} | <b>ricerca:</b> {search_title} \n \n" +
-                                                                                    "<b>{title}</b> \n" +
-                                                                                    "<b>Descrizione: breve </b> {description_short} \n" +
-                                                                                    "<b>prezzo:</b> {price} \n" +
-                                                                                    "<b>mt2:</b> {mt2} | <b>zona:</b> {zone} \n" +
-                                                                                    "<b>piano:</b> {floor} | <b>locali:</b> {n_rooms} \n" +
-                                                                                    "<b>bagni:</b> {n_bath_rooms} | <b>data annuncio:</b> {date} \n" +
-                                                                                    "\n" +
-                                                                                    " {description}" +
-                                                                                    "\n" +
-                                                                                    "\n" +
-                                                                                    "<a href='{link_detail}'> vai a vederlo!</a>" +
-                                                                                    "\n" +
-                                                                                    "\n")
+    send_as_html(chat_telegram_id, disable_notification=disable_notification,
+                 text=("<b>da: </b> {origin_site} | <b>ricerca:</b> {search_title} \n \n" +
+                       "<b>{title}</b> \n" +
+                       "<b>Descrizione: breve </b> {description_short} \n" +
+                       "<b>prezzo:</b> {price} \n" +
+                       "<b>mt2:</b> {mt2} | <b>zona:</b> {zone} \n" +
+                       "<b>piano:</b> {floor} | <b>locali:</b> {n_rooms} \n" +
+                       "<b>bagni:</b> {n_bath_rooms} | <b>data annuncio:</b> {date} \n" +
+                       "\n" +
+                       " {description}" +
+                       "\n" +
+                       "\n" +
+                       "<a href='{link_detail}'> vai a vederlo!</a>" +
+                       "\n" +
+                       "\n")
                  .format(origin_site=home.origin_site,
                          search_title=search.title,
                          title=home.title,
@@ -70,6 +71,8 @@ def send_home(chat_telegram_id, disable_notification, home: Home, search: Search
 
 
 # updater.dispatcher.add_handler(CommandHandler('start', start))
+
+
 # updater.dispatcher.add_handler(MessageHandler(Filters.text, unknown))
 # Filters out unknown commands
 # updater.dispatcher.add_handler(MessageHandler(Filters.command, unknown))
