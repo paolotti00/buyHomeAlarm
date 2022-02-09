@@ -19,7 +19,7 @@ class DictObj:
 
 
 def config_app():
-    parser = argparse.ArgumentParser(description="Calculator")
+    parser = argparse.ArgumentParser(description="buyhomealarm")
     # [Define arguments here]
     parser.add_argument('--environment', required=True,
                         help="must specify " + Constant.ENV_ENVIROMENT_DEV_VALUE + "  or " + Constant.ENV_ENVIROMENT_DEV_VALUE)

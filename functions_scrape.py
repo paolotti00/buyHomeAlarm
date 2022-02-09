@@ -182,7 +182,7 @@ def get_only_the_new_homes(homes: [Home]):
     repository = Repository()
     homes_to_return = []
     for home in homes:
-        if not home or home.id_from_site is None or len(repository.get_home(home.id_from_site)) > 0:
+        if not home or home.id_from_site is None or len(repository.get_home_by_id_from_site(home.id_from_site)) > 0:
             continue
         homes_to_return.append(home)
     logging.info("there are %s new homes from %s homes", len(homes_to_return), len(homes))

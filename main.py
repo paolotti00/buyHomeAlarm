@@ -1,7 +1,9 @@
-from datetime import datetime, timedelta
+import time
 
 from apscheduler.scheduler import Scheduler
 import logging
+
+from telegram.error import RetryAfter
 
 from classes import Job, Chat
 from functions_config import get_config, config_app
@@ -11,7 +13,7 @@ from functions_repository import Repository
 from functions_scheduler import configure_jobs
 from functions_scrape import scrape_data, get_only_the_new_homes
 
-emails_to_send = ["pa.tripodi@hotmail.it"]
+emails_to_send = ["pa.tripodi@hotmail.it", "denisediprima@virgilio.it"]
 
 scheduler = Scheduler()
 
@@ -37,10 +39,26 @@ def main(job_id_mongo):
             Mail().send(emails_to_send, get_config().email.subject,
                         render_email_template("email_jinja_template.html", searches=research_to_send, n_homes=n_homes))
         if job.send_in_chat:
-            # todo
             chat: Chat = repository.get_chat(job.chat_id)
             logging.info("sending in chat with id %s", chat.telegram_id)
             bot_telegram.send_text("ho trovato {} case".format(n_homes), chat.telegram_id)
+            for research in research_to_send:
+                bot_telegram.send_as_html(text=
+                                          "<b>Ricerca:</b>  {} \n <b>Descrizione:</b> {}".format(research.title,
+                                                                                                  research.description),
+                                          chat_telegram_id=chat.telegram_id, disable_notification=True)
+                for home in research.homes:
+                    try:
+                        bot_telegram.send_home(chat_telegram_id=chat.telegram_id, disable_notification=True, home=home, search=research)
+                        time.sleep(1)
+                    except RetryAfter as r:
+                        logging.error("telegram chat id: %s RetryAfter error im waiting for %s", chat.telegram_id, r.retry_after)
+                        time.sleep(r.retry_after)
+                        logging.info("telegram chat id: %s time is now i restarted to send message ")
+                        # todo check the skipped home
+                        continue
+            logging.info("message sent correctly in chat %s", chat.telegram_id)
+            bot_telegram.send_text("fine! rincotrollerò fra {} minuti <3".format(job.n_minutes_timer), chat.telegram_id)
         # save in db
         for research in research_to_send:
             repository.save_many_homes(research.homes)
@@ -57,5 +75,4 @@ config_app()
 config = get_config()
 scheduler = configure_jobs(scheduler, main)
 scheduler.start()
-# start_sched_and_keep_alive(scheduler)
 bot_telegram.start_bot()

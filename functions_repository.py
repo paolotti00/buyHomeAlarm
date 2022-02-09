@@ -33,7 +33,7 @@ class Repository:
         logging.info("saving many homes: %s homes", len(list_of_data))
         save_many(self.homes_collection, list_of_data)
 
-    def get_home(self, id_from_site) -> [Home]:
+    def get_home_by_id_from_site(self, id_from_site) -> [Home]:
         result = self.homes_collection.find({'id_from_site': {'$eq': id_from_site}})
         return from_cursors_to_list_object(result, Home)
 
