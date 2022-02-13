@@ -16,3 +16,5 @@ supported_sites_conf :
     api_case_string: "search-list"
   - site_name: "idealista"
     base_url: "https://www.idealista.it"
+  - site_name: "casa_it"
+    base_url: "https://www.casa.it"

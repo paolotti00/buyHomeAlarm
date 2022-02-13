@@ -5,7 +5,7 @@ import requests
 from bs4 import BeautifulSoup
 
 from classes import Home, Site, Search
-from constants import IMMOBILIARE_SITE_NAME, IDEALISTA_SITE_NAME
+from constants import IMMOBILIARE_SITE_NAME, IDEALISTA_SITE_NAME, CASA_IT_SITE_NAME
 from functions_config import get_config, get_supported_site_conf
 from functions_repository import Repository
 
@@ -31,6 +31,8 @@ def scrape_data(job_id) -> [Search]:
                     homes_to_return += get_data_immobiliare(site.query_urls, get_supported_site_conf(site.site_name))
                 elif site.site_name.casefold() == IDEALISTA_SITE_NAME.casefold():
                     homes_to_return += get_data_idealista(site.query_urls, get_supported_site_conf(site.site_name))
+                elif site.site_name.casefold() == CASA_IT_SITE_NAME.casefold():
+                    homes_to_return += get_data_casa_it(site.query_urls, get_supported_site_conf(site.site_name))
             else:
                 logging.info("no query_urls in search %s site %s", search.title, site.site_name)
         search.homes = homes_to_return
@@ -178,6 +180,17 @@ def scrape_idealista(soup, site: Site):
         homes_to_return.append(home_item)
     return homes_to_return
 
+
+# casa it
+def get_data_casa_it(query_urls: [str], supported_site_conf) -> [Home]:
+    logging.info("start to elaborate '%s' site", supported_site_conf.site_name)
+    homes_to_return = []
+    for query_url in query_urls:
+        homes_to_return += scrape_casa_it(get_soup(query_url), supported_site_conf)
+    logging.info("end to elaborate %s site, found %s homes", supported_site_conf.site_name, len(homes_to_return))
+    return homes_to_return
+
+
 def scrape_casa_it(soup, site: Site):
     homes_to_return = []
     items = soup.findAll("article")
@@ -185,9 +198,9 @@ def scrape_casa_it(soup, site: Site):
         home_item: Home = Home()
         home_item.origin_site = site.site_name
 
-        #decode
+        # decode
         try:
-            home_item.id_from_site = site.site_name + "_" + item.find("a", {"class": "srp-card__anc"})["id"]
+            home_item.id_from_site = site.site_name + "_" + item.find("div", {"class": "srp-card__anc"})["id"]
         except (AttributeError, TypeError, KeyError) as e:
             pass
         try:
@@ -199,13 +212,30 @@ def scrape_casa_it(soup, site: Site):
         except (AttributeError, TypeError, KeyError) as e:
             pass
         try:
-            home_item.price = item.find("span", {"class": "info-features__price"}).text
+            home_item.price = item.find("div", {"class": "info-features__price"}).find("p").text
         except (AttributeError, TypeError, KeyError) as e:
             pass
         try:
-            home_item.parking = item.find("span", {"class": "is-box"}).text
+            home_item.parking = item.find("div", {"class": "is-box"}).text
         except (AttributeError, TypeError, KeyError) as e:
             pass
+        try:
+            home_item.description = item.find("div", {"class": "art-desc__content"}).text
+        except (AttributeError, TypeError, KeyError) as e:
+            pass
+        try:
+            for item_detail in item.findAll("div", {"class": "info-features__item"}):
+                # check if mt2
+                if "mq" in item_detail.text:
+                    home_item.mt2 = item_detail.text
+                elif "locali" in item_detail.text:
+                    home_item.n_rooms = item_detail.text
+        except (AttributeError, TypeError, KeyError) as e:
+            pass
+        # todo date
+        # add element
+        homes_to_return.append(home_item)
+    return homes_to_return
 
 
 def get_only_the_new_homes(homes: [Home]):
