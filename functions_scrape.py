@@ -178,6 +178,35 @@ def scrape_idealista(soup, site: Site):
         homes_to_return.append(home_item)
     return homes_to_return
 
+def scrape_casa_it(soup, site: Site):
+    homes_to_return = []
+    items = soup.findAll("article")
+    for item in items:
+        home_item: Home = Home()
+        home_item.origin_site = site.site_name
+
+        #decode
+        try:
+            home_item.id_from_site = site.site_name + "_" + item.find("a", {"class": "srp-card__anc"})["id"]
+        except (AttributeError, TypeError, KeyError) as e:
+            pass
+        try:
+            home_item.link_detail = site.base_url + item.find("a")["href"]
+        except (AttributeError, TypeError, KeyError) as e:
+            pass
+        try:
+            home_item.title = item.find("div", {"class": "art-addr"}).find("a")["title"]
+        except (AttributeError, TypeError, KeyError) as e:
+            pass
+        try:
+            home_item.price = item.find("span", {"class": "info-features__price"}).text
+        except (AttributeError, TypeError, KeyError) as e:
+            pass
+        try:
+            home_item.parking = item.find("span", {"class": "is-box"}).text
+        except (AttributeError, TypeError, KeyError) as e:
+            pass
+
 
 def get_only_the_new_homes(homes: [Home]):
     logging.info("evaluating how many new homes of these %s homes", len(homes))
