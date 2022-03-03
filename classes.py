@@ -55,6 +55,7 @@ class Search:
     title = None
     description = None
     sites: [Site] = [Site()]
+    keywords: [str]
 
     # chatId: str = None
 

@@ -37,9 +37,16 @@ def send_as_html(chat_telegram_id, text, disable_notification):
                              disable_notification=disable_notification)
 
 
-# no callback funtions:
+# no callback functions:
 
 def send_home(chat_telegram_id, disable_notification, home: Home, search: Search):
+    hashtags = ""
+    try:
+        for hashtag in search.keywords:
+            hashtags = hashtags + " " + "#" + hashtag
+    except AttributeError:
+        # todo fixme find the way to avoid : AttributeError: 'types.SimpleNamespace' object has no attribute 'keywords'
+        pass
     send_as_html(chat_telegram_id, disable_notification=disable_notification,
                  text=("<b>da: </b> {origin_site} | <b>ricerca:</b> {search_title} \n \n" +
                        "<b>{title}</b> \n" +
@@ -54,6 +61,8 @@ def send_home(chat_telegram_id, disable_notification, home: Home, search: Search
                        "\n" +
                        "<a href='{link_detail}'> vai a vederlo!</a>" +
                        "\n" +
+                       "- \n" +
+                       hashtags +
                        "\n" +
                        "- \n" +
                        "- \n")
