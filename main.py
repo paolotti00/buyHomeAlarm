@@ -12,7 +12,7 @@ import functions_bot_telegram as bot_telegram
 from functions_email import Mail, render_email_template
 from functions_repository import Repository
 from functions_scheduler import configure_jobs
-from functions_scrape import scrape_data, get_only_the_new_homes
+from functions_scrape import scrape_data, get_only_the_new_homes, order_home_by_price
 
 emails_to_send = ["pa.tripodi@hotmail.it", "denisediprima@virgilio.it"]
 
@@ -28,6 +28,7 @@ def main(job_id_mongo):
     searches = scrape_data(job_id_mongo)
     for research in searches:
         research.homes = get_only_the_new_homes(research.homes)
+        research.homes = order_home_by_price(research.homes)
         if len(research.homes) > 0:
             n_homes = n_homes + len(research.homes)
             research_to_send.append(research)
