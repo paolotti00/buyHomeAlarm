@@ -36,6 +36,9 @@ class Home:
     origin_site = None
     date = None
 
+    def get_price(self):
+        return self.price
+
 
 class Site:
     def __init__(self, d=None):
@@ -61,6 +64,18 @@ class Search:
 
 
 # configuration file
+class Bot:
+    def __init__(self, d=None):
+        common_init(self, d)
+
+    api_token = None
+
+
+class Telegram:
+    def __init__(self, d=None):
+        common_init(self, d)
+
+    bot: Bot()
 
 
 class Sender:
@@ -105,6 +120,7 @@ class Config:
     db: DB = DB()
     sites: [Site] = [Site()]
     supported_sites_conf: [Site] = [Site()]
+    telegram: Telegram = Telegram()
     searches: [Search] = [Search()]
 
 

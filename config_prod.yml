@@ -18,3 +18,6 @@ supported_sites_conf :
     base_url: "https://www.idealista.it"
   - site_name: "casa_it"
     base_url: "https://www.casa.it"
+telegram:
+  bot:
+    api_token: "5138319576:AAE0Blx0DTpEvgHCmezgENqexbaC2HkMFAI"
