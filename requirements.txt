@@ -7,5 +7,5 @@ PyYAML~=6.0
 DateTime~=4.3
 bs4~=0.0.1
 apscheduler~=2.0.1
-pymongo[srv]
+pymongo[srv]~=3.12.3
 python-telegram-bot~=12.8

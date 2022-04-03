@@ -6,6 +6,7 @@ import logging
 from telegram.error import RetryAfter
 
 from classes import Job, Chat
+from fuctions_utility import start_sched_and_keep_alive
 from functions_config import get_config, config_app
 import functions_bot_telegram as bot_telegram
 from functions_email import Mail, render_email_template
@@ -47,13 +48,15 @@ def main(job_id_mongo):
                 try:
                     bot_telegram.send_as_html(text=
                                               "<b>Ricerca:</b>  {} \n <b>Descrizione:</b> {}".format(research.title,
-                                                                                                      research.description),
+                                                                                                     research.description),
                                               chat_telegram_id=chat.telegram_id, disable_notification=True)
                     for home in research.homes:
-                        bot_telegram.send_home(chat_telegram_id=chat.telegram_id, disable_notification=True, home=home, search=research)
+                        bot_telegram.send_home(chat_telegram_id=chat.telegram_id, disable_notification=True, home=home,
+                                               search=research)
                         time.sleep(1)
                 except RetryAfter as r:
-                    logging.error("telegram chat id: %s RetryAfter error im waiting for %s", chat.telegram_id, r.retry_after)
+                    logging.error("telegram chat id: %s RetryAfter error im waiting for %s", chat.telegram_id,
+                                  r.retry_after)
                     time.sleep(r.retry_after)
                     logging.info("telegram chat id: %s time is now i restarted to send message ")
                     # todo check the skipped search - retry
@@ -76,4 +79,5 @@ config_app()
 config = get_config()
 scheduler = configure_jobs(scheduler, main)
 scheduler.start()
+# start_sched_and_keep_alive(scheduler)
 bot_telegram.start_bot()

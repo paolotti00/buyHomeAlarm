@@ -11,7 +11,7 @@ def configure_jobs(scheduler: Scheduler, callback) -> Scheduler:
     if len(jobs) > 0:
         logging.info("found %s active jobs", len(jobs))
         for job in jobs:
-            scheduler.add_interval_job(callback, args=[job.id_mongo], minutes=job.n_minutes_timer,
+            scheduler.add_interval_job(callback, args=[job._id], minutes=job.n_minutes_timer,
                                        start_date=datetime.now() + timedelta(seconds=5))
         logging.info("all jobs was configured")
     else:
