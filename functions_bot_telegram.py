@@ -7,9 +7,10 @@ from telegram.ext.messagehandler import MessageHandler
 from telegram.ext.filters import Filters
 import logging
 
+import functions_config
 from classes import Home, Search
 
-updater = Updater("5138319576:AAE0Blx0DTpEvgHCmezgENqexbaC2HkMFAI", use_context=True)
+updater = Updater(functions_config.get_telegram_confing().bot.api_token, use_context=True)
 
 
 def start(update: Update, context: CallbackContext):

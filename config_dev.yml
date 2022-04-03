@@ -16,3 +16,6 @@ supported_sites_conf :
     api_case_string: "search-list"
   - site_name: "idealista"
     base_url: "https://www.idealista.it"
+telegram:
+  bot:
+    api_token: "419140869:AAHJcjXX8GOYaqVROa9Zp0uwlfU4VoR5jM4"

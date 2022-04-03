@@ -64,3 +64,7 @@ def get_supported_site_conf(site_name) -> [Site]:
     for supported_sites_conf in get_config().supported_sites_conf:
         if supported_sites_conf.site_name.casefold() == site_name:
             return supported_sites_conf
+
+
+def get_telegram_confing():
+    return get_config().telegram
