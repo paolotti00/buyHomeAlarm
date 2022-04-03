@@ -250,8 +250,9 @@ def get_only_the_new_homes(homes: [Home]):
     return homes_to_return
 
 
-def order_by_price(homes: [Home]):
-    return homes.sort(key=homes.price)
+def order_home_by_price(homes: [Home]):
+    homes.sort(key=Home.get_price)
+    return homes
 
 
 def check_if_already_sent_it():

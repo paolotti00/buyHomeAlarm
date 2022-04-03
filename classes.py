@@ -36,6 +36,9 @@ class Home:
     origin_site = None
     date = None
 
+    def get_price(self):
+        return self.price
+
 
 class Site:
     def __init__(self, d=None):
