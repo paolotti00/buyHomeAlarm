@@ -149,3 +149,55 @@ class Chat:
     date_of_creation = None
     jobs_id: [ObjectId]
     homes_found_id: [ObjectId]
+
+
+# Money stuffs and cash calculation
+class CalculationResult:
+    def __init__(self, d=None):
+        common_init(self, d)
+
+    description: str = None,
+    mortgage_cash_needed: int = None,
+    mortgage_money_to_be_requested: int = None,
+    fixed_costs_bank: int = None,
+    fixed_costs_notary: int = None,
+    total_cash_needed: int = None,
+    total_cash_left: int = None
+
+
+class FixedCost:
+    def __init__(self, d=None):
+        common_init(self, d)
+
+    bank: int = None,
+    notary: int = None
+
+
+class BasePrice:
+    def __init__(self, d=None):
+        common_init(self, d)
+
+    description: str = None,
+    value: str = None,
+    price_mt2: int = None
+
+
+class Mortgage:
+    def __init__(self, d=None):
+        common_init(self, d)
+
+    base_price: BasePrice = BasePrice(),
+    percentage: int = None,
+    cash_needed: int = None,
+    money_to_be_requested: int = None
+
+
+class MoneyStuff:
+    def __init__(self, d=None):
+        common_init(self, d)
+
+    cash_held: int = None,
+    base_price: BasePrice = BasePrice(),
+    mortgage: [Mortgage] = [Mortgage()],
+    fixed_costs: [FixedCost] = [FixedCost()],
+    calculation_result: CalculationResult = CalculationResult()
