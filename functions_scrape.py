@@ -6,6 +6,7 @@ from bs4 import BeautifulSoup
 
 from classes import Home, Site, Search
 from constants import IMMOBILIARE_SITE_NAME, IDEALISTA_SITE_NAME, CASA_IT_SITE_NAME
+from functions_cash import add_money_stuffs_calculation
 from functions_config import get_config, get_supported_site_conf
 from functions_repository import Repository
 
@@ -238,13 +239,15 @@ def scrape_casa_it(soup, site: Site):
     return homes_to_return
 
 
-def get_only_the_new_homes(homes: [Home]):
+def get_only_the_new_homes_and_rich_them(homes: [Home]):
     logging.info("evaluating how many new homes of these %s homes", len(homes))
     repository = Repository()
     homes_to_return = []
     for home in homes:
         if not home or home.id_from_site is None or len(repository.get_home_by_id_from_site(home.id_from_site)) > 0:
             continue
+        # rich them with details
+        home = add_money_stuffs_calculation(home)
         homes_to_return.append(home)
     logging.info("there are %s new homes from %s homes", len(homes_to_return), len(homes))
     return homes_to_return

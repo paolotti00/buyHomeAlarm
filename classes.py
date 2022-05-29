@@ -16,6 +16,65 @@ def common_init(self, d=None):
             setattr(self, key, value)
 
 
+# Money stuffs and cash calculation
+class CalculationResult:
+    def __init__(self, d=None):
+        common_init(self, d)
+
+    description: str
+    mortgage_cash_needed: int
+    mortgage_money_to_be_requested: int
+    fixed_costs_bank: int
+    fixed_costs_notary: int
+    total_cash_needed: int
+    total_cash_left: int
+
+
+class FixedCost:
+    def __init__(self, d=None):
+        common_init(self, d)
+
+    bank: int = None
+    notary: int = None
+
+
+class BasePrice:
+    def __init__(self, d=None):
+        common_init(self, d)
+
+
+class Mortgage:
+    def __init__(self, d=None):
+        common_init(self, d)
+
+
+class MoneyStuffCase:
+    def __init__(self, d=None):
+        common_init(self, d)
+
+    base_price: BasePrice = BasePrice()
+    mortgage: Mortgage = Mortgage()
+    calculation_result: CalculationResult()
+
+
+class MoneyStuff:
+    def __init__(self, d=None):
+        common_init(self, d)
+
+    cash_held: int = None
+    fixed_costs: FixedCost = FixedCost()
+    cases: [MoneyStuffCase] = [MoneyStuffCase()]
+
+
+class Price:
+    def __init__(self, d=None):
+        common_init(self, d)
+
+    description: str
+    value: int
+
+
+# home
 class Home:
     def __init__(self, d=None):
         common_init(self, d)
@@ -35,6 +94,7 @@ class Home:
     link_detail = None
     origin_site = None
     date = None
+    money_staff: MoneyStuff = None
 
     def get_price(self):
         return self.price
@@ -140,6 +200,14 @@ class Job:
     chat_id: ObjectId = None
 
 
+class UserChatConfig:
+    def __init__(self, d=None):
+        common_init(self, d)
+
+    cash_held: int = None
+    mortgage_percentages: [int]
+
+
 class Chat:
     def __init__(self, d=None):
         common_init(self, d)
@@ -149,55 +217,4 @@ class Chat:
     date_of_creation = None
     jobs_id: [ObjectId]
     homes_found_id: [ObjectId]
-
-
-# Money stuffs and cash calculation
-class CalculationResult:
-    def __init__(self, d=None):
-        common_init(self, d)
-
-    description: str = None,
-    mortgage_cash_needed: int = None,
-    mortgage_money_to_be_requested: int = None,
-    fixed_costs_bank: int = None,
-    fixed_costs_notary: int = None,
-    total_cash_needed: int = None,
-    total_cash_left: int = None
-
-
-class FixedCost:
-    def __init__(self, d=None):
-        common_init(self, d)
-
-    bank: int = None,
-    notary: int = None
-
-
-class BasePrice:
-    def __init__(self, d=None):
-        common_init(self, d)
-
-    description: str = None,
-    value: str = None,
-    price_mt2: int = None
-
-
-class Mortgage:
-    def __init__(self, d=None):
-        common_init(self, d)
-
-    base_price: BasePrice = BasePrice(),
-    percentage: int = None,
-    cash_needed: int = None,
-    money_to_be_requested: int = None
-
-
-class MoneyStuff:
-    def __init__(self, d=None):
-        common_init(self, d)
-
-    cash_held: int = None,
-    base_price: BasePrice = BasePrice(),
-    mortgage: [Mortgage] = [Mortgage()],
-    fixed_costs: [FixedCost] = [FixedCost()],
-    calculation_result: CalculationResult = CalculationResult()
+    user_chat_config: UserChatConfig = None
