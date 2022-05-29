@@ -1,0 +1,16 @@
+- mortgage's calculations
+-- add
+--- how many cash needed for 80% and 95%
+--- how many cash left from our cash?
+
+- new hashtag
+-- examples
+--- "senza ascensore"
+--- "bilocale"
+--- "ristrutturare"
+-- maybe do it configurable chat for chat?
+
+- improve "add new search"
+-- add -> adding from bot
+--- add -> translate from bot to particular site
+---
