@@ -32,10 +32,11 @@ def add_money_stuffs_calculation(home: Home, user_chat_config: UserChatConfig) -
             # agency cost calculation
             agency_commission_without_vat = ((price.value * UserChatConfig.agency_percentage) / 100)
             agency_commission = agency_commission_without_vat + (
-                        (agency_commission_without_vat * UserChatConfig.agency_percentage_vat_percentage) / 100)
+                    (agency_commission_without_vat * UserChatConfig.agency_percentage_vat_percentage) / 100)
             # totals
             calculation_result.total_cash_needed = calculation_result.mortgage_cash_needed + agency_commission
             calculation_result.total_cash_needed = UserChatConfig.fixed_costs_bank + UserChatConfig.fixed_costs_notary
             calculation_result.total_cash_left = UserChatConfig.cash_held - calculation_result.total_cash_needed
             # todo calculate
             calculation_results.append(calculation_result)
+    return calculation_results
