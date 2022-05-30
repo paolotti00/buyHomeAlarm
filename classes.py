@@ -204,8 +204,13 @@ class UserChatConfig:
     def __init__(self, d=None):
         common_init(self, d)
 
+    _id: ObjectId = None
     cash_held: int = None
     mortgage_percentages: [int]
+    agency_percentage: int
+    agency_percentage_vat_percentage: int
+    fixed_costs_bank: int
+    fixed_costs_notary: int
 
 
 class Chat:
@@ -217,4 +222,4 @@ class Chat:
     date_of_creation = None
     jobs_id: [ObjectId]
     homes_found_id: [ObjectId]
-    user_chat_config: UserChatConfig = None
+    user_chat_config_id: ObjectId
