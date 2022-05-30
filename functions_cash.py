@@ -22,7 +22,7 @@ def add_money_stuffs_calculation(home: Home, user_chat_config: UserChatConfig) -
     calculation_results = []
     prices: [Price] = calculate_prices(home.price)
     for price in prices:
-        for mortgage_percentage in UserChatConfig.mortgage_percentages:
+        for mortgage_percentage in user_chat_config.mortgage_percentages:
             calculation_result: CalculationResult = CalculationResult()
             # mortgage calculation
             calculation_result.total_cash_needed = 0
@@ -30,13 +30,14 @@ def add_money_stuffs_calculation(home: Home, user_chat_config: UserChatConfig) -
             calculation_result.mortgage_cash_needed = price.value - ((price.value * (100 - mortgage_percentage)) / 100)
             calculation_result.mortgage_money_to_be_requested = price.value - calculation_result.mortgage_cash_needed
             # agency cost calculation
-            agency_commission_without_vat = ((price.value * UserChatConfig.agency_percentage) / 100)
+            agency_commission_without_vat = ((price.value * user_chat_config.agency_percentage) / 100)
             agency_commission = agency_commission_without_vat + (
-                    (agency_commission_without_vat * UserChatConfig.agency_percentage_vat_percentage) / 100)
+                    (agency_commission_without_vat * user_chat_config.agency_percentage_vat_percentage) / 100)
             # totals
             calculation_result.total_cash_needed = calculation_result.mortgage_cash_needed + agency_commission
-            calculation_result.total_cash_needed = UserChatConfig.fixed_costs_bank + UserChatConfig.fixed_costs_notary
-            calculation_result.total_cash_left = UserChatConfig.cash_held - calculation_result.total_cash_needed
+            calculation_result.total_cash_needed = calculation_result.total_cash_needed + user_chat_config.fixed_costs_bank
+            calculation_results.total_cash_needed = calculation_result.total_cash_needed + user_chat_config.fixed_costs_notary
+            calculation_result.total_cash_left = user_chat_config.cash_held - calculation_result.total_cash_needed
             # todo calculate
             calculation_results.append(calculation_result)
     return calculation_results
