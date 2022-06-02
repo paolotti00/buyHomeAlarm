@@ -12,3 +12,7 @@ def start_sched_and_keep_alive(scheduler):
     except (KeyboardInterrupt, SystemExit):
         # Not strictly necessary if daemonic mode is enabled but should be done if possible
         scheduler.shutdown()
+
+
+def clean_price_and_convert_to_int(price: str) -> int:
+    return int(price.replace("€", "").replace(".", "").strip())

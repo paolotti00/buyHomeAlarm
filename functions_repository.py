@@ -4,7 +4,7 @@ import pymongo
 from bson import ObjectId
 
 import functions_config as func_conf
-from classes import Job, Search, Home, Chat
+from classes import Job, Search, Home, Chat, UserConfig
 import logging
 import json
 from types import SimpleNamespace
@@ -37,6 +37,7 @@ class Repository:
         self.homes_collection = mydb["home"]
         self.jobs_collection = mydb["job"]
         self.searches_collection = mydb["search"]
+        self.user_config = mydb["userChatConfig"]
 
     def save_many_homes(self, list_of_data: []):
         logging.info("saving many homes: %s homes", len(list_of_data))
@@ -73,4 +74,8 @@ class Repository:
 
     def get_chat(self, chat_id_mongo) -> Chat:
         result = self.chat_collection.find_one({'_id': {'$eq': ObjectId(chat_id_mongo)}})
+        return from_dict_to_object(result)
+
+    def get_user_config_by_id(self, user_config_id_mongo) -> UserConfig:
+        result = self.user_config.find_one({'_id': {'$eq': ObjectId(user_config_id_mongo)}})
         return from_dict_to_object(result)

@@ -26,8 +26,9 @@ def main(job_id_mongo):
     job: Job = repository.get_job(job_id_mongo)
     logging.info("start job %s", job_id_mongo)
     searches = scrape_data(job_id_mongo)
+    user_config = repository.get_user_config_by_id(job.user_config_id)
     for research in searches:
-        research.homes = get_only_the_new_homes_and_rich_them(research.homes)
+        research.homes = get_only_the_new_homes_and_rich_them(research.homes, user_config)
         research.homes = order_home_by_price(research.homes)
         if len(research.homes) > 0:
             n_homes = n_homes + len(research.homes)

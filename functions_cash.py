@@ -1,8 +1,10 @@
-from classes import Home, UserChatConfig, Price, CalculationResult
+from classes import Home, UserConfig, Price, CalculationResult, MoneyStuff, FixedCost, MoneyStuffCase
+from fuctions_utility import clean_price_and_convert_to_int
 
 
-def calculate_prices(advertisement_price) -> [Price]:
+def calculate_prices(advertisement_price: str) -> [Price]:
     prices = []
+    advertisement_price = clean_price_and_convert_to_int(advertisement_price)
     # advertisement_price
     advertisement_price_ob: Price = Price()
     advertisement_price_ob.description = "advertisement price"
@@ -17,27 +19,40 @@ def calculate_prices(advertisement_price) -> [Price]:
     return prices
 
 
-def add_money_stuffs_calculation(home: Home, user_chat_config: UserChatConfig) -> [CalculationResult]:
+def add_money_stuffs_calculation(home: Home, user_chat_config: UserConfig) -> Home:
     # this function care of money stuff calculation like mortgage ecc
-    calculation_results = []
+    money_stuff = MoneyStuff()
+    # fixed costs
+    fixed_cost = FixedCost()
+    fixed_cost.bank = user_chat_config.fixed_costs_bank
+    fixed_cost.notary = user_chat_config.fixed_costs_notary
+    money_stuff.fixed_costs = fixed_cost
+    money_stuff.cash_held = user_chat_config.cash_held
+    # money stuff cases
+    money_stuff_cases = []
+
     prices: [Price] = calculate_prices(home.price)
     for price in prices:
         for mortgage_percentage in user_chat_config.mortgage_percentages:
-            calculation_result: CalculationResult = CalculationResult()
+            money_stuff_case: MoneyStuffCase = MoneyStuffCase()
             # mortgage calculation
-            calculation_result.total_cash_needed = 0
-            calculation_result.description = price.description + " " + mortgage_percentage
-            calculation_result.mortgage_cash_needed = price.value - ((price.value * (100 - mortgage_percentage)) / 100)
-            calculation_result.mortgage_money_to_be_requested = price.value - calculation_result.mortgage_cash_needed
+            money_stuff_case.total_cash_needed = 0
+            money_stuff_case.description = price.description + " " + str(mortgage_percentage)
+            money_stuff_case.mortgage_percentage = mortgage_percentage
+            money_stuff_case.mortgage_cash_needed = (price.value * (100 - mortgage_percentage)) / 100
+            money_stuff_case.mortgage_money_to_be_requested = price.value - money_stuff_case.mortgage_cash_needed
             # agency cost calculation
             agency_commission_without_vat = ((price.value * user_chat_config.agency_percentage) / 100)
             agency_commission = agency_commission_without_vat + (
                     (agency_commission_without_vat * user_chat_config.agency_percentage_vat_percentage) / 100)
             # totals
-            calculation_result.total_cash_needed = calculation_result.mortgage_cash_needed + agency_commission
-            calculation_result.total_cash_needed = calculation_result.total_cash_needed + user_chat_config.fixed_costs_bank
-            calculation_results.total_cash_needed = calculation_result.total_cash_needed + user_chat_config.fixed_costs_notary
-            calculation_result.total_cash_left = user_chat_config.cash_held - calculation_result.total_cash_needed
-            # todo calculate
-            calculation_results.append(calculation_result)
-    return calculation_results
+            money_stuff_case.total_cash_needed = money_stuff_case.mortgage_cash_needed + agency_commission
+            money_stuff_case.total_cash_needed = money_stuff_case.total_cash_needed + user_chat_config.fixed_costs_bank
+            money_stuff_case.total_cash_needed = money_stuff_case.total_cash_needed + user_chat_config.fixed_costs_notary
+            money_stuff_case.total_cash_left = user_chat_config.cash_held - money_stuff_case.total_cash_needed
+
+            money_stuff_case.calculation_result = money_stuff_case
+            money_stuff_cases.append(money_stuff_case)
+    money_stuff.cases = money_stuff_cases
+    home.money_stuff = money_stuff
+    return home
