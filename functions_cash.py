@@ -1,3 +1,4 @@
+import logging
 from classes import Home, UserConfig, Price, CalculationResult, MoneyStuff, FixedCost, MoneyStuffCase
 from fuctions_utility import clean_price_and_convert_to_int
 
@@ -20,6 +21,7 @@ def calculate_prices(advertisement_price: str) -> [Price]:
 
 
 def add_money_stuffs_calculation(home: Home, user_chat_config: UserConfig) -> Home:
+    logging.info("start to rich home %s", home.id_from_site)
     # this function care of money stuff calculation like mortgage ecc
     money_stuff = MoneyStuff()
     # fixed costs
@@ -55,4 +57,5 @@ def add_money_stuffs_calculation(home: Home, user_chat_config: UserConfig) -> Ho
             money_stuff_cases.append(money_stuff_case)
     money_stuff.cases = money_stuff_cases
     home.money_stuff = money_stuff
+    logging.info("finished to rich home %s", home.id_from_site)
     return home
