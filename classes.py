@@ -208,3 +208,12 @@ class Chat:
     date_of_creation = None
     jobs_id: [ObjectId]
     homes_found_id: [ObjectId]
+
+
+class Button:
+    def __init__(self, d=None):
+        common_init(self, d)
+
+    text: str = None
+    callback_function: str = None
+    parameters: str

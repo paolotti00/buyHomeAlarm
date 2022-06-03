@@ -9,7 +9,7 @@ from telegram.ext.filters import Filters
 import logging
 
 import functions_config
-from classes import Home, Search, MoneyStuff, MoneyStuffCase
+from classes import Home, Search, MoneyStuff, MoneyStuffCase, Button
 
 updater = Updater(functions_config.get_telegram_confing().bot.api_token, use_context=True)
 
@@ -39,23 +39,34 @@ def send_as_html(chat_telegram_id, text, disable_notification):
                              disable_notification=disable_notification)
 
 
-def send_as_html_with_buttons(chat_telegram_id, text, disable_notification):
+def send_as_html_with_buttons(chat_telegram_id, text, disable_notification, buttons: [Button]):
+    keyboard = []
+    for received_button in buttons:
+        keyboard.append(InlineKeyboardButton(text=received_button.text,
+                                             callback_data=received_button.callback_function + ":" + received_button.parameters)) #todo mortgage FIX THIS
     updater.bot.send_message(chat_id=chat_telegram_id, parse_mode=ParseMode.HTML, text=text,
-                             disable_notification=disable_notification, reply_markup=InlineKeyboardMarkup([
-            [InlineKeyboardButton(text='calcoli mutuo', callback_data="test")],
-            [InlineKeyboardButton(text='vai a vederlo', url='https://t.me')],
-        ]))
+                             disable_notification=disable_notification, reply_markup=keyboard)
 
 
-async def button(update: Update) -> None:
-    """Parses the CallbackQuery and updates the message text."""
+# buttons callbacks
+def do_money_stuff_calculation(parameters: str):
+    # parameters
+    chat_telegram_id = parameters.split(",")[0]
+    home_id = parameters.split(",")[1]
+    send_text(home_id, chat_telegram_id)
+
+
+supported_buttons = {
+    "money_stuff_calculations": do_money_stuff_calculation
+
+}
+
+
+def button(update: Update, context) -> None:
     query = update.callback_query
-
-    # CallbackQueries need to be answered, even if no notification to the user is needed
-    # Some clients may have trouble otherwise. See https://core.telegram.org/bots/api#callbackquery
-    await query.answer()
-
-    await query.edit_message_text(text=f"Selected option: {query.data}")
+    button_pressed = query.data.split(':')[0]
+    parameters = query.data.split(':')[1]
+    return supported_buttons.get(button_pressed)(parameters)
 
 
 # no callback functions:
@@ -68,6 +79,12 @@ def send_home(chat_telegram_id, disable_notification, home: Home, search: Search
     except AttributeError:
         # todo fixme find the way to avoid : AttributeError: 'types.SimpleNamespace' object has no attribute 'keywords'
         pass
+    buttons = []
+    button_mortgage_calculation: Button = Button()
+    button_mortgage_calculation.text = "fammi i calcoli"
+    button_mortgage_calculation.callback_function = "money_stuff_calculations"
+    button_mortgage_calculation.parameters = chat_telegram_id + "," + home.id_from_site
+    buttons.append(button_mortgage_calculation)
     send_as_html_with_buttons(chat_telegram_id, disable_notification=disable_notification,
                               text=("<b>da: </b> {origin_site} | <b>ricerca:</b> {search_title} \n \n" +
                                     "<b>{title}</b> \n" +
@@ -107,7 +124,7 @@ def send_home(chat_telegram_id, disable_notification, home: Home, search: Search
                                       description=home.description,
                                       # todo mortgage
                                       # cash_held=home.money_stuff.cash_held,
-                                      link_detail=home.link_detail))
+                                      link_detail=home.link_detail), buttons=buttons)
 
 
 def get_money_stuff_as_html(money_stuff_cases: [MoneyStuffCase()], mortgage_cash_needed=None) -> str:
