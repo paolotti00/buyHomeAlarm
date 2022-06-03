@@ -1,5 +1,5 @@
 import logging
-from classes import Home, UserConfig, Price, CalculationResult, MoneyStuff, FixedCost, MoneyStuffCase
+from classes import Home, UserConfig, Price, MoneyStuff, FixedCost, MoneyStuffCase
 from fuctions_utility import clean_price_and_convert_to_int
 
 

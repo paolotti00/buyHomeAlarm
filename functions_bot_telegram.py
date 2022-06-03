@@ -8,7 +8,7 @@ from telegram.ext.filters import Filters
 import logging
 
 import functions_config
-from classes import Home, Search
+from classes import Home, Search, MoneyStuff, MoneyStuffCase
 
 updater = Updater(functions_config.get_telegram_confing().bot.api_token, use_context=True)
 
@@ -59,6 +59,10 @@ def send_home(chat_telegram_id, disable_notification, home: Home, search: Search
                        "\n" +
                        " {description}" +
                        "\n" +
+                       "dati monetari:" +
+                       "\n" +
+                       "<b>contanti posseduti:</b> {cash_held} \n" +
+                       get_money_stuff_as_html(home.money_stuff.cases) +
                        "\n" +
                        "<a href='{link_detail}'> vai a vederlo!</a>" +
                        "\n" +
@@ -79,7 +83,28 @@ def send_home(chat_telegram_id, disable_notification, home: Home, search: Search
                          n_bath_rooms=home.n_bath_rooms,
                          date=home.date,
                          description=home.description,
+                         cash_held=home.money_stuff.cash_held,
                          link_detail=home.link_detail))
+
+
+def get_money_stuff_as_html(money_stuff_cases: [MoneyStuffCase()], mortgage_cash_needed=None) -> str:
+    to_return: str = ""
+    for money_stuff_case in money_stuff_cases:
+        to_return = to_return + to_return.format("<b>Descrizione:  </b> {money_stuff_case_description} \n" +
+                                                 "commissione agenzia 4%: </b> {mortgage_cash_needed} \n"
+                                                 "percentuale mutuo: </b> {mortgage_percentage} \n" +
+                                                 "soldi da richiedere:</b> {mortgage_money_to_be_requested} \n" +
+                                                 "contanti necessari per mutuo: </b> {mortgage_cash_needed} \n" +
+                                                 "costi fissi forfettari: </b> {fixed_costs} \n" +
+                                                 "contanti necessari in totale: </b> {total_cash_needed} \n"
+                                                 "contanti che rimangono: </b> {total_cash_left} \n"
+                                                 ).format(
+            description=money_stuff_case.description,
+            description= mortgage_cash_needed #tbd!!
+
+
+        )
+    return to_return
 
 
 # updater.dispatcher.add_handler(CommandHandler('start', start))

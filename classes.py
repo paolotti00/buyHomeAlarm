@@ -17,10 +17,6 @@ def common_init(self, d=None):
 
 
 # Money stuffs and cash calculation
-class CalculationResult:
-    def __init__(self, d=None):
-        common_init(self, d)
-
 
 class FixedCost:
     def __init__(self, d=None):
@@ -38,6 +34,7 @@ class MoneyStuffCase:
     mortgage_percentage: int
     mortgage_cash_needed: int
     mortgage_money_to_be_requested: int
+    agency_commission: int
     fixed_costs_bank: int
     fixed_costs_notary: int
     total_cash_needed: int
