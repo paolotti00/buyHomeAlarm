@@ -15,4 +15,5 @@ def start_sched_and_keep_alive(scheduler):
 
 
 def clean_price_and_convert_to_int(price: str) -> int:
+    # todo mortgage fix ValueError: invalid literal for int() with base 10: '298000 330000(-9,7%)'
     return int(price.replace("€", "").replace(".", "").strip())

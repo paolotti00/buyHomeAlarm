@@ -193,6 +193,7 @@ def get_data_casa_it(query_urls: [str], supported_site_conf) -> [Home]:
 
 
 def scrape_casa_it(soup, site: Site):
+    # todo check if no blocked
     homes_to_return = []
     items = soup.findAll("article")
     for item in items:
@@ -246,8 +247,9 @@ def get_only_the_new_homes_and_rich_them(homes: [Home], user_config: UserConfig)
     for home in homes:
         if not home or home.id_from_site is None or len(repository.get_home_by_id_from_site(home.id_from_site)) > 0:
             continue
+        # todo mortgage
         # rich them with details
-        home = add_money_stuffs_calculation(home, user_config)
+        # home = add_money_stuffs_calculation(home, user_config)
         homes_to_return.append(home)
     logging.info("there are %s new homes from %s homes", len(homes_to_return), len(homes))
     return homes_to_return

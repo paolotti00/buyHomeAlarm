@@ -1,4 +1,5 @@
-from telegram import ParseMode
+from telegram import ParseMode, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram.ext import CallbackQueryHandler
 from telegram.ext.updater import Updater
 from telegram.update import Update
 from telegram.ext.callbackcontext import CallbackContext
@@ -38,6 +39,25 @@ def send_as_html(chat_telegram_id, text, disable_notification):
                              disable_notification=disable_notification)
 
 
+def send_as_html_with_buttons(chat_telegram_id, text, disable_notification):
+    updater.bot.send_message(chat_id=chat_telegram_id, parse_mode=ParseMode.HTML, text=text,
+                             disable_notification=disable_notification, reply_markup=InlineKeyboardMarkup([
+            [InlineKeyboardButton(text='calcoli mutuo', callback_data="test")],
+            [InlineKeyboardButton(text='vai a vederlo', url='https://t.me')],
+        ]))
+
+
+async def button(update: Update) -> None:
+    """Parses the CallbackQuery and updates the message text."""
+    query = update.callback_query
+
+    # CallbackQueries need to be answered, even if no notification to the user is needed
+    # Some clients may have trouble otherwise. See https://core.telegram.org/bots/api#callbackquery
+    await query.answer()
+
+    await query.edit_message_text(text=f"Selected option: {query.data}")
+
+
 # no callback functions:
 
 def send_home(chat_telegram_id, disable_notification, home: Home, search: Search):
@@ -48,44 +68,46 @@ def send_home(chat_telegram_id, disable_notification, home: Home, search: Search
     except AttributeError:
         # todo fixme find the way to avoid : AttributeError: 'types.SimpleNamespace' object has no attribute 'keywords'
         pass
-    send_as_html(chat_telegram_id, disable_notification=disable_notification,
-                 text=("<b>da: </b> {origin_site} | <b>ricerca:</b> {search_title} \n \n" +
-                       "<b>{title}</b> \n" +
-                       "<b>Descrizione: breve </b> {description_short} \n" +
-                       "<b>prezzo:</b> {price} \n" +
-                       "<b>mt2:</b> {mt2} | <b>zona:</b> {zone} \n" +
-                       "<b>piano:</b> {floor} | <b>locali:</b> {n_rooms} \n" +
-                       "<b>bagni:</b> {n_bath_rooms} | <b>data annuncio:</b> {date} \n" +
-                       "\n" +
-                       " {description}" +
-                       "\n" +
-                       "\n" +
-                       "dati monetari:" +
-                       "\n" +
-                       "<b>contanti posseduti:</b> {cash_held} \n" +
-                       get_money_stuff_as_html(home.money_stuff.cases) +
-                       "\n" +
-                       "<a href='{link_detail}'> vai a vederlo!</a>" +
-                       "\n" +
-                       "- \n" +
-                       hashtags +
-                       "\n" +
-                       "- \n" +
-                       "- \n")
-                 .format(origin_site=home.origin_site,
-                         search_title=search.title,
-                         title=home.title,
-                         description_short=home.description_short,
-                         price=home.price,
-                         mt2=home.mt2,
-                         zone=home.zone,
-                         floor=home.floor,
-                         n_rooms=home.n_rooms,
-                         n_bath_rooms=home.n_bath_rooms,
-                         date=home.date,
-                         description=home.description,
-                         cash_held=home.money_stuff.cash_held,
-                         link_detail=home.link_detail))
+    send_as_html_with_buttons(chat_telegram_id, disable_notification=disable_notification,
+                              text=("<b>da: </b> {origin_site} | <b>ricerca:</b> {search_title} \n \n" +
+                                    "<b>{title}</b> \n" +
+                                    "<b>Descrizione: breve </b> {description_short} \n" +
+                                    "<b>prezzo:</b> {price} \n" +
+                                    "<b>mt2:</b> {mt2} | <b>zona:</b> {zone} \n" +
+                                    "<b>piano:</b> {floor} | <b>locali:</b> {n_rooms} \n" +
+                                    "<b>bagni:</b> {n_bath_rooms} | <b>data annuncio:</b> {date} \n" +
+                                    "\n" +
+                                    " {description}" +
+                                    "\n" +
+                                    "\n" +
+                                    "dati monetari:" +
+                                    "\n" +
+                                    # todo mortgage
+                                    # "<b>contanti posseduti:</b> {cash_held} \n" +
+                                    # get_money_stuff_as_html(home.money_stuff.cases) +
+                                    "\n" +
+                                    "<a href='{link_detail}'> vai a vederlo!</a>" +
+                                    "\n" +
+                                    "- \n" +
+                                    hashtags +
+                                    "\n" +
+                                    "- \n" +
+                                    "- \n")
+                              .format(origin_site=home.origin_site,
+                                      search_title=search.title,
+                                      title=home.title,
+                                      description_short=home.description_short,
+                                      price=home.price,
+                                      mt2=home.mt2,
+                                      zone=home.zone,
+                                      floor=home.floor,
+                                      n_rooms=home.n_rooms,
+                                      n_bath_rooms=home.n_bath_rooms,
+                                      date=home.date,
+                                      description=home.description,
+                                      # todo mortgage
+                                      # cash_held=home.money_stuff.cash_held,
+                                      link_detail=home.link_detail))
 
 
 def get_money_stuff_as_html(money_stuff_cases: [MoneyStuffCase()], mortgage_cash_needed=None) -> str:
@@ -107,7 +129,7 @@ def get_money_stuff_as_html(money_stuff_cases: [MoneyStuffCase()], mortgage_cash
             mortgage_money_to_be_requested=money_stuff_case.mortgage_money_to_be_requested,
             mortgage_cash_needed=money_stuff_case.mortgage_cash_needed,
             fixed_costs=money_stuff_case.fixed_costs_notary + money_stuff_case.fixed_costs_bank,
-            total_cash_needed = money_stuff_case.total_cash_needed,
+            total_cash_needed=money_stuff_case.total_cash_needed,
             total_cash_left=money_stuff_case.total_cash_left
         )
     return to_return
@@ -124,4 +146,5 @@ def get_money_stuff_as_html(money_stuff_cases: [MoneyStuffCase()], mortgage_cash
 
 
 def start_bot():
+    updater.dispatcher.add_handler(CallbackQueryHandler(button))
     updater.start_polling()

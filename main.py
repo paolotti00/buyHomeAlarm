@@ -65,8 +65,8 @@ def main(job_id_mongo):
             logging.info("message sent correctly in chat %s", chat.telegram_id)
             bot_telegram.send_text("fine! rincotrollerò fra {} minuti <3".format(job.n_minutes_timer), chat.telegram_id)
         # save in db
-        for research in research_to_send:
-            repository.save_many_homes(research.homes)
+        # for research in research_to_send:
+        #     repository.save_many_homes(research.homes)
     else:
         logging.info("no new search with new result retrieved, no new mail will be sent")
     logging.info("end")
