@@ -59,6 +59,7 @@ def send_home(chat_telegram_id, disable_notification, home: Home, search: Search
                        "\n" +
                        " {description}" +
                        "\n" +
+                       "\n" +
                        "dati monetari:" +
                        "\n" +
                        "<b>contanti posseduti:</b> {cash_held} \n" +
@@ -90,19 +91,24 @@ def send_home(chat_telegram_id, disable_notification, home: Home, search: Search
 def get_money_stuff_as_html(money_stuff_cases: [MoneyStuffCase()], mortgage_cash_needed=None) -> str:
     to_return: str = ""
     for money_stuff_case in money_stuff_cases:
-        to_return = to_return + to_return.format("<b>Descrizione:  </b> {money_stuff_case_description} \n" +
-                                                 "commissione agenzia 4%: </b> {mortgage_cash_needed} \n"
-                                                 "percentuale mutuo: </b> {mortgage_percentage} \n" +
-                                                 "soldi da richiedere:</b> {mortgage_money_to_be_requested} \n" +
-                                                 "contanti necessari per mutuo: </b> {mortgage_cash_needed} \n" +
-                                                 "costi fissi forfettari: </b> {fixed_costs} \n" +
-                                                 "contanti necessari in totale: </b> {total_cash_needed} \n"
-                                                 "contanti che rimangono: </b> {total_cash_left} \n"
-                                                 ).format(
-            description=money_stuff_case.description,
-            description= mortgage_cash_needed #tbd!!
-
-
+        test = "<b>Descrizione:  </b> {money_stuff_case_description} \n" + \
+               "<b>commissione agenzia 4%: </b> {agency_commission_needed} \n" + \
+               "<b>percentuale mutuo: </b> {mortgage_percentage} \n" + \
+               "<b>soldi da richiedere:</b> {mortgage_money_to_be_requested} \n" + \
+               "<b>contanti necessari per mutuo: </b> {mortgage_cash_needed} \n" + \
+               "<b>costi fissi forfettari: </b> {fixed_costs} \n" + \
+               "<b>contanti necessari in totale: </b> {total_cash_needed} \n" + \
+               "<b>contanti che rimangono: </b> {total_cash_left} \n" + \
+               "--------------------------------------- \n"
+        to_return = to_return + test.format(
+            money_stuff_case_description=money_stuff_case.description,
+            agency_commission_needed=money_stuff_case.agency_commission,
+            mortgage_percentage=money_stuff_case.mortgage_percentage,
+            mortgage_money_to_be_requested=money_stuff_case.mortgage_money_to_be_requested,
+            mortgage_cash_needed=money_stuff_case.mortgage_cash_needed,
+            fixed_costs=money_stuff_case.fixed_costs_notary + money_stuff_case.fixed_costs_bank,
+            total_cash_needed = money_stuff_case.total_cash_needed,
+            total_cash_left=money_stuff_case.total_cash_left
         )
     return to_return
 

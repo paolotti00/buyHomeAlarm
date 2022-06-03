@@ -37,6 +37,7 @@ class MoneyStuffCase:
     agency_commission: int
     fixed_costs_bank: int
     fixed_costs_notary: int
+    fixed_costs_total: int
     total_cash_needed: int
     total_cash_left: int
 

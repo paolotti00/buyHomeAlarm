@@ -45,15 +45,18 @@ def add_money_stuffs_calculation(home: Home, user_chat_config: UserConfig) -> Ho
             money_stuff_case.mortgage_money_to_be_requested = price.value - money_stuff_case.mortgage_cash_needed
             # agency cost calculation
             agency_commission_without_vat = ((price.value * user_chat_config.agency_percentage) / 100)
-            agency_commission = agency_commission_without_vat + (
+            money_stuff_case.agency_commission = agency_commission_without_vat + (
                     (agency_commission_without_vat * user_chat_config.agency_percentage_vat_percentage) / 100)
+            # fixed costs
+            money_stuff_case.fixed_costs_bank = user_chat_config.fixed_costs_bank
+            money_stuff_case.fixed_costs_notary = user_chat_config.fixed_costs_notary
+            money_stuff_case.fixed_costs_total = user_chat_config.fixed_costs_bank + user_chat_config.fixed_costs_notary
             # totals
-            money_stuff_case.total_cash_needed = money_stuff_case.mortgage_cash_needed + agency_commission
-            money_stuff_case.total_cash_needed = money_stuff_case.total_cash_needed + user_chat_config.fixed_costs_bank
-            money_stuff_case.total_cash_needed = money_stuff_case.total_cash_needed + user_chat_config.fixed_costs_notary
+            money_stuff_case.total_cash_needed = money_stuff_case.mortgage_cash_needed + money_stuff_case.agency_commission
+            money_stuff_case.total_cash_needed = money_stuff_case.total_cash_needed + money_stuff_case.fixed_costs_total
             money_stuff_case.total_cash_left = user_chat_config.cash_held - money_stuff_case.total_cash_needed
 
-            money_stuff_case.calculation_result = money_stuff_case
+            money_stuff_case = money_stuff_case
             money_stuff_cases.append(money_stuff_case)
     money_stuff.cases = money_stuff_cases
     home.money_stuff = money_stuff
