@@ -4,10 +4,10 @@ import pymongo
 from bson import ObjectId
 
 import functions_config as func_conf
-from classes import Job, Search, Home, Chat, UserConfig, MoneyStuff
+from classes import Job, Search, Home, Chat, UserConfig, MoneyStuff, SimpleNamespaceCustom
 import logging
 import json
-from types import SimpleNamespace
+
 
 from fuctions_utility import convert2serialize
 
@@ -32,7 +32,7 @@ def from_cursors_to_list_object(cursors, class_type):
 
 def from_dict_to_object(d: dict):
     # to SimpleNamespace :/
-    return json.loads(json.dumps(d, default=str), object_hook=lambda d: SimpleNamespace(**d))
+    return json.loads(json.dumps(d, default=str), object_hook=lambda d: SimpleNamespaceCustom(**d))
 
 
 class Repository:

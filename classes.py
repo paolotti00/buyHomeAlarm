@@ -1,4 +1,6 @@
 # classes
+from types import SimpleNamespace
+
 from bson import ObjectId
 
 
@@ -228,3 +230,9 @@ class Button:
     text: str = None
     callback_function: str = None
     parameters: str
+
+
+# extend python class
+class SimpleNamespaceCustom(SimpleNamespace):
+    def __getattr__(self, name):
+            return "Attribute '{}' doesnt exist".format(str(name))

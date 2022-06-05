@@ -117,24 +117,21 @@ def send_home(chat_telegram_id, disable_notification, home: Home, search: Search
                    "\n" + \
                    "- \n" + \
                    "- \n"
-    try:
-        text_to_send = text_to_send.format(origin_site=home.origin_site,
-                                           search_title=search.title if search else "",
-                                           title=home.title,
-                                           description_short=home.description_short,
-                                           price=home.price,
-                                           mt2=home.mt2,
-                                           zone=home.zone,
-                                           floor=home.floor,
-                                           n_rooms=home.n_rooms,
-                                           n_bath_rooms=home.n_bath_rooms,
-                                           date=home.date,
-                                           description=home.description,
-                                           # todo mortgage
-                                           # cash_held=home.money_stuff.cash_held,
-                                           link_detail=home.link_detail)
-    except AttributeError:
-        pass
+    text_to_send = text_to_send.format(origin_site=home.origin_site,
+                                       search_title=search.title if search else "",
+                                       title=home.title,
+                                       description_short=home.description_short,
+                                       price=home.price,
+                                       mt2=home.mt2,
+                                       zone=home.zone,
+                                       floor=home.floor,
+                                       n_rooms=home.n_rooms,
+                                       n_bath_rooms=home.n_bath_rooms,
+                                       date=home.date,
+                                       description=home.description,
+                                       # todo mortgage
+                                       # cash_held=home.money_stuff.cash_held,
+                                       link_detail=home.link_detail)
     send_as_html_with_buttons(chat_telegram_id, disable_notification=disable_notification, text=text_to_send,
                               buttons=buttons)
 
