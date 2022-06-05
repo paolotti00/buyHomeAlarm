@@ -121,7 +121,8 @@ def send_home(chat_telegram_id, disable_notification, home: Home, search: Search
                    "- \n" + \
                    hashtags + \
                    "\n" + \
-                   "<a href='{link_detail}'>. </a>" + \
+                   "- \n" + \
+                   "<a href='{link_detail}'> link </a>" + \
                    " \n"
     text_to_send = text_to_send.format(origin_site=home.origin_site,
                                        search_title=search.title if search else "",
