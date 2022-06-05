@@ -9,12 +9,12 @@ def calculate_prices(advertisement_price: str) -> [Price]:
     advertisement_price = clean_price_and_convert_to_int(advertisement_price)
     # advertisement_price
     advertisement_price_ob: Price = Price()
-    advertisement_price_ob.description = "advertisement price"
+    advertisement_price_ob.description = "prezzo annuncio"
     advertisement_price_ob.value = advertisement_price
     prices.append(advertisement_price_ob)
     # calculate estimate price
     estimated_price: Price = Price()
-    estimated_price.description = "estimate price - 20% off"  # todo maybe put description in constant
+    estimated_price.description = "prezzo meno il 20%"  # todo maybe put description in constant
     estimated_price_discount = advertisement_price * 20 / 100  # todo put 20% in config object
     estimated_price.value = advertisement_price - estimated_price_discount
     prices.append(estimated_price)
@@ -38,9 +38,10 @@ def do_money_stuffs_calculation(home: Home, user_chat_config: UserConfig) -> Mon
     for price in prices:
         for mortgage_percentage in user_chat_config.mortgage_percentages:
             money_stuff_case: MoneyStuffCase = MoneyStuffCase()
+            money_stuff_case.base_price = price.value
             # mortgage calculation
             money_stuff_case.total_cash_needed = 0
-            money_stuff_case.description = price.description + " " + str(mortgage_percentage)
+            money_stuff_case.description = price.description + " mutuo al " + str(mortgage_percentage) + "%"
             money_stuff_case.mortgage_percentage = mortgage_percentage
             money_stuff_case.mortgage_cash_needed = (price.value * (100 - mortgage_percentage)) / 100
             money_stuff_case.mortgage_money_to_be_requested = price.value - money_stuff_case.mortgage_cash_needed

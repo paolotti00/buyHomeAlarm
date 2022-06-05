@@ -137,21 +137,27 @@ def send_home(chat_telegram_id, disable_notification, home: Home, search: Search
 def get_money_stuff_as_html(money_stuff) -> str:
     repository = Repository()
     user_chat_config: UserConfig = repository.get_user_config_by_id_telegram_chat_id(money_stuff.telegram_chat_id)
-    to_return: str = "dati monetari: \n"
+    to_return: str = "--------------------------------------- \n" + \
+                     "--------------------------------------- \n" + \
+                     "CALCOLI MONETARI: \n" + \
+                     "<b>contanti posseduti:</b>" + str(user_chat_config.cash_held) + "\n" + \
+                     "--------------------------------------- \n"
     for money_stuff_case in money_stuff.cases:
-        test = "<b>contanti posseduti:</b> {cash_held} \n" + \
-               "<b>Descrizione:  </b> {money_stuff_case_description} \n" + \
-               "<b>commissione agenzia 4%: </b> {agency_commission_needed} \n" + \
-               "<b>percentuale mutuo: </b> {mortgage_percentage} \n" + \
-               "<b>soldi da richiedere:</b> {mortgage_money_to_be_requested} \n" + \
-               "<b>contanti necessari per mutuo: </b> {mortgage_cash_needed} \n" + \
+        test = "<b>Descrizione:  </b> {money_stuff_case_description} \n" + \
+               "\n" + \
+               "<b>prezzo partenza: </b> {base_price} \n" + \
+               "<b>agenzia - commissione  4%: </b> {agency_commission_needed} \n" + \
+               "<b>mutuo - percentuale mutuo: </b> {mortgage_percentage} \n" + \
+               "<b>mutuo - soldi da richiedere:</b> {mortgage_money_to_be_requested} \n" + \
+               "<b>mutuo - contanti necessari: </b> {mortgage_cash_needed} \n" + \
                "<b>costi fissi forfettari: </b> {fixed_costs} \n" + \
+               "\n" + \
                "<b>contanti necessari in totale: </b> {total_cash_needed} \n" + \
                "<b>contanti che rimangono: </b> {total_cash_left} \n" + \
                "--------------------------------------- \n"
         to_return = to_return + test.format(
-            cash_held=user_chat_config.cash_held,
-            money_stuff_case_description=money_stuff_case.description,
+            base_price=money_stuff_case.base_price,
+            money_stuff_case_description=money_stuff_case.description.capitalize(),
             agency_commission_needed=money_stuff_case.agency_commission,
             mortgage_percentage=money_stuff_case.mortgage_percentage,
             mortgage_money_to_be_requested=money_stuff_case.mortgage_money_to_be_requested,

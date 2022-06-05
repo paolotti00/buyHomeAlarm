@@ -75,6 +75,7 @@ class MoneyStuffCase:
         common_init(self, d)
 
     description: str
+    base_price: int
     mortgage_percentage: int
     mortgage_cash_needed: int
     mortgage_money_to_be_requested: int
