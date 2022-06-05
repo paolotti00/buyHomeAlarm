@@ -16,6 +16,48 @@ def common_init(self, d=None):
             setattr(self, key, value)
 
 
+class Price:
+    def __init__(self, d=None):
+        common_init(self, d)
+
+    description: str
+    value: int
+
+
+# home
+class HomeReference:
+    def __init__(self, d=None):
+        common_init(self, d)
+
+        _id: ObjectId = None
+        home_id: ObjectId = None
+        home_id_from_site = None
+
+
+class Home:
+    def __init__(self, d=None):
+        common_init(self, d)
+
+    _id: ObjectId = None
+    id_from_site = None
+    title = None
+    price = None
+    zone = None
+    mt2 = None
+    floor = None
+    n_rooms = None
+    n_bath_rooms = None
+    parking = None
+    description = None
+    description_short = None
+    link_detail = None
+    origin_site = None
+    date = None
+
+    def get_price(self):
+        return self.price
+
+
 # Money stuffs and cash calculation
 
 class FixedCost:
@@ -46,43 +88,12 @@ class MoneyStuff:
     def __init__(self, d=None):
         common_init(self, d)
 
+    _id: ObjectId = None
+    telegram_chat_id = None
     cash_held: int = None
     fixed_costs: FixedCost = FixedCost()
     cases: [MoneyStuffCase] = [MoneyStuffCase()]
-
-
-class Price:
-    def __init__(self, d=None):
-        common_init(self, d)
-
-    description: str
-    value: int
-
-
-# home
-class Home:
-    def __init__(self, d=None):
-        common_init(self, d)
-
-    _id: ObjectId = None
-    id_from_site = None
-    title = None
-    price = None
-    zone = None
-    mt2 = None
-    floor = None
-    n_rooms = None
-    n_bath_rooms = None
-    parking = None
-    description = None
-    description_short = None
-    link_detail = None
-    origin_site = None
-    date = None
-    money_stuff: MoneyStuff = None
-
-    def get_price(self):
-        return self.price
+    home_reference: HomeReference
 
 
 class Site:
@@ -183,7 +194,6 @@ class Job:
     send_email: bool = None
     send_in_chat: bool = None
     chat_id: ObjectId = None
-    user_config_id: ObjectId = None
 
 
 class UserConfig:
@@ -208,6 +218,7 @@ class Chat:
     date_of_creation = None
     jobs_id: [ObjectId]
     homes_found_id: [ObjectId]
+    user_config_id: ObjectId = None
 
 
 class Button:

@@ -12,7 +12,7 @@ import functions_bot_telegram as bot_telegram
 from functions_email import Mail, render_email_template
 from functions_repository import Repository
 from functions_scheduler import configure_jobs
-from functions_scrape import scrape_data, get_only_the_new_homes_and_rich_them, order_home_by_price
+from functions_scrape import scrape_data, get_only_the_new_homes, order_home_by_price
 
 emails_to_send = ["pa.tripodi@hotmail.it", "denisediprima@virgilio.it"]
 
@@ -25,10 +25,10 @@ def main(job_id_mongo):
     n_homes = 0
     job: Job = repository.get_job(job_id_mongo)
     logging.info("start job %s", job_id_mongo)
-    searches = scrape_data(job_id_mongo)
-    user_config = repository.get_user_config_by_id(job.user_config_id)
+    searches = []
+    # searches = scrape_data(job_id_mongo)
     for research in searches:
-        research.homes = get_only_the_new_homes_and_rich_them(research.homes, user_config)
+        research.homes = get_only_the_new_homes(research.homes)
         research.homes = order_home_by_price(research.homes)
         if len(research.homes) > 0:
             n_homes = n_homes + len(research.homes)
@@ -53,7 +53,7 @@ def main(job_id_mongo):
                                               chat_telegram_id=chat.telegram_id, disable_notification=True)
                     for home in research.homes:
                         bot_telegram.send_home(chat_telegram_id=chat.telegram_id, disable_notification=True, home=home,
-                                               search=research)
+                                               search=research, money_stuff=None)
                         time.sleep(1)
                 except RetryAfter as r:
                     logging.error("telegram chat id: %s RetryAfter error im waiting for %s", chat.telegram_id,
@@ -65,8 +65,8 @@ def main(job_id_mongo):
             logging.info("message sent correctly in chat %s", chat.telegram_id)
             bot_telegram.send_text("fine! rincotrollerò fra {} minuti <3".format(job.n_minutes_timer), chat.telegram_id)
         # save in db
-        # for research in research_to_send:
-        #     repository.save_many_homes(research.homes)
+        for research in research_to_send:
+            repository.save_many_homes(research.homes)
     else:
         logging.info("no new search with new result retrieved, no new mail will be sent")
     logging.info("end")

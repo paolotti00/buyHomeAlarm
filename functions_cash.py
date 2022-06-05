@@ -1,6 +1,7 @@
 import logging
-from classes import Home, UserConfig, Price, MoneyStuff, FixedCost, MoneyStuffCase
+from classes import Home, UserConfig, Price, MoneyStuff, FixedCost, MoneyStuffCase, HomeReference, Chat
 from fuctions_utility import clean_price_and_convert_to_int
+from functions_repository import Repository
 
 
 def calculate_prices(advertisement_price: str) -> [Price]:
@@ -20,8 +21,8 @@ def calculate_prices(advertisement_price: str) -> [Price]:
     return prices
 
 
-def add_money_stuffs_calculation(home: Home, user_chat_config: UserConfig) -> Home:
-    logging.info("start to rich home %s", home.id_from_site)
+def do_money_stuffs_calculation(home: Home, user_chat_config: UserConfig) -> MoneyStuff:
+    logging.info("start to calculate money stuff for home %s", home.id_from_site)
     # this function care of money stuff calculation like mortgage ecc
     money_stuff = MoneyStuff()
     # fixed costs
@@ -59,6 +60,32 @@ def add_money_stuffs_calculation(home: Home, user_chat_config: UserConfig) -> Ho
             money_stuff_case = money_stuff_case
             money_stuff_cases.append(money_stuff_case)
     money_stuff.cases = money_stuff_cases
-    home.money_stuff = money_stuff
-    logging.info("finished to rich home %s", home.id_from_site)
-    return home
+    logging.info("finished to calculate money stuff for home %s", home.id_from_site)
+    return money_stuff
+
+
+def get_money_stuffs(home: Home, telegram_chat_id) -> MoneyStuff:
+    logging.info("start to get money stuff for home %s", home.id_from_site)
+    repository = Repository()
+    # check if already exist on db
+    money_stuffs = repository.get_money_stuff_by_home_id_from_site_and_chat_telegram_id(home.id_from_site,
+                                                                                        telegram_chat_id)
+    if money_stuffs is None:
+        # not already exist on db - will be calculated and saved
+        logging.info("not already exist on db - will be calculated and saved for home %s", home.id_from_site)
+        chat: Chat = repository.get_chat_by_telegram_id(telegram_chat_id)
+        user_chat_config = repository.get_user_config_by_id(chat.user_config_id)
+        money_stuffs = do_money_stuffs_calculation(home, user_chat_config)
+        # save it
+        logging.info("saving money stuff for home %s", home.id_from_site)
+        money_stuffs.telegram_chat_id = telegram_chat_id
+        home_reference: HomeReference = HomeReference()
+        home_reference.home_id = home._id
+        home_reference.home_id_from_site = home.id_from_site
+        money_stuffs.home_reference = home_reference
+        repository.save_money_stuff(money_stuffs)
+        logging.info("money stuff for home %s saved", home.id_from_site)
+    else:
+        logging.info("money stuff already exist for home %s", home.id_from_site)
+    logging.info("money stuff for home %s calculated or retrieved successfully", home.id_from_site)
+    return money_stuffs

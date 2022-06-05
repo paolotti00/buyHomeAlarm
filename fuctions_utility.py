@@ -17,3 +17,27 @@ def start_sched_and_keep_alive(scheduler):
 def clean_price_and_convert_to_int(price: str) -> int:
     # todo mortgage fix ValueError: invalid literal for int() with base 10: '298000 330000(-9,7%)'
     return int(price.replace("€", "").replace(".", "").strip())
+
+
+def convert2serialize(obj):
+    if isinstance(obj, dict):
+        return {k: convert2serialize(v) for k, v in obj.items()}
+    elif hasattr(obj, "_ast"):
+        return convert2serialize(obj._ast())
+    elif not isinstance(obj, str) and hasattr(obj, "__iter__"):
+        return [convert2serialize(v) for v in obj]
+    elif hasattr(obj, "__dict__"):
+        return {
+            k: convert2serialize(v)
+            for k, v in obj.__dict__.items()
+            if not callable(v) and not k.startswith('_')
+        }
+    else:
+        return obj
+
+
+def return_empty_if_not_exist_attribute(test):
+    try:
+        return test
+    except AttributeError:
+        return ""

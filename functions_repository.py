@@ -4,10 +4,12 @@ import pymongo
 from bson import ObjectId
 
 import functions_config as func_conf
-from classes import Job, Search, Home, Chat, UserConfig
+from classes import Job, Search, Home, Chat, UserConfig, MoneyStuff
 import logging
 import json
 from types import SimpleNamespace
+
+from fuctions_utility import convert2serialize
 
 
 def save_many(collection, list_data: []):
@@ -15,6 +17,10 @@ def save_many(collection, list_data: []):
         collection.insert_one(vars(data))
     # print(collection.count_documents({}))
     # print(list(collection.find({})))
+
+
+def save_one(collection, data):
+    collection.insert_one(convert2serialize(data))
 
 
 def from_cursors_to_list_object(cursors, class_type):
@@ -35,6 +41,7 @@ class Repository:
         mydb = client.buyhomealarm_db
         self.chat_collection = mydb["chat"]
         self.homes_collection = mydb["home"]
+        self.home_money_stuff_collection = mydb["homeMoneyStuff"]
         self.jobs_collection = mydb["job"]
         self.searches_collection = mydb["search"]
         self.user_config = mydb["userChatConfig"]
@@ -76,6 +83,22 @@ class Repository:
         result = self.chat_collection.find_one({'_id': {'$eq': ObjectId(chat_id_mongo)}})
         return from_dict_to_object(result)
 
+    def get_chat_by_telegram_id(self, chat_id_telegram) -> Chat:
+        result = self.chat_collection.find_one({'telegram_id': {'$eq': chat_id_telegram}})
+        return from_dict_to_object(result)
+
     def get_user_config_by_id(self, user_config_id_mongo) -> UserConfig:
         result = self.user_config.find_one({'_id': {'$eq': ObjectId(user_config_id_mongo)}})
         return from_dict_to_object(result)
+
+    def get_user_config_by_id_telegram_chat_id(self, telegram_chat_id) -> UserConfig:
+        result = self.user_config.find_one({'telegram_chat_id': {'$eq': telegram_chat_id}})
+        return from_dict_to_object(result)
+
+    def get_money_stuff_by_home_id_from_site_and_chat_telegram_id(self, home_id_from_site,
+                                                                  chat_telegram_id) -> MoneyStuff:
+        result = self.home_money_stuff_collection.find_one({'chat_id': chat_telegram_id, 'homeReference.home_id_from_site': home_id_from_site})
+        return from_dict_to_object(result)
+
+    def save_money_stuff(self, money_stuff: MoneyStuff):
+        save_one(self.home_money_stuff_collection, money_stuff)
