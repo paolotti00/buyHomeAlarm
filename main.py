@@ -44,7 +44,7 @@ def main(job_id_mongo):
         if job.send_in_chat:
             chat: Chat = repository.get_chat(job.chat_id)
             logging.info("sending in chat with id %s", chat.telegram_id)
-            bot_telegram.send_text("ho trovato {} case".format(n_homes), chat.telegram_id)
+            bot_telegram.send_text("ho trovato {} case".format(n_homes), chat.telegram_id,False)
             for research in research_to_send:
                 try:
                     bot_telegram.send_as_html(text=
@@ -63,7 +63,7 @@ def main(job_id_mongo):
                     # todo check the skipped search - retry
                     continue
             logging.info("message sent correctly in chat %s", chat.telegram_id)
-            bot_telegram.send_text("fine! rincotrollerò fra {} minuti <3".format(job.n_minutes_timer), chat.telegram_id)
+            bot_telegram.send_text("fine! rincotrollerò fra {} minuti <3".format(job.n_minutes_timer), chat.telegram_id, False)
         # save in db
         for research in research_to_send:
             repository.save_many_homes(research.homes)
@@ -71,7 +71,7 @@ def main(job_id_mongo):
         if job.send_in_chat:
             chat: Chat = repository.get_chat(job.chat_id)
             logging.info("sending msg in chat with id %s", chat.telegram_id)
-            bot_telegram.send_text("Ciao ho controllato ma non ho trovato nessuna nuova casa - rincotrollerò fra {} minuti <3".format(job.n_minutes_timer), chat.telegram_id)
+            bot_telegram.send_text("Ciao ho controllato ma non ho trovato nessuna nuova casa - rincotrollerò fra {} minuti <3".format(job.n_minutes_timer), chat.telegram_id, True)
         logging.info("no new search with new result retrieved, no new mail will be sent")
     logging.info("end")
 

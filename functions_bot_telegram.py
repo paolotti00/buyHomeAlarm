@@ -32,8 +32,8 @@ def unknown(update: Update, context: CallbackContext):
     update.message.reply_text("Sorry '%s' is not a valid command" % update.message.text)
 
 
-def send_text(msg, chat_telegram_id):
-    updater.bot.send_message(chat_id=chat_telegram_id, text=msg)
+def send_text(msg, chat_telegram_id, disable_notification: bool):
+    updater.bot.send_message(chat_id=chat_telegram_id, text=msg, disable_notification=disable_notification)
 
 
 def send_as_html(chat_telegram_id, text, disable_notification):
