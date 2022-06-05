@@ -25,6 +25,7 @@ def main(job_id_mongo):
     n_homes = 0
     job: Job = repository.get_job(job_id_mongo)
     logging.info("start job %s", job_id_mongo)
+    # searches = []
     searches = scrape_data(job_id_mongo)
     for research in searches:
         research.homes = get_only_the_new_homes(research.homes)
@@ -52,7 +53,7 @@ def main(job_id_mongo):
                                               chat_telegram_id=chat.telegram_id, disable_notification=True)
                     for home in research.homes:
                         bot_telegram.send_home(chat_telegram_id=chat.telegram_id, disable_notification=True, home=home,
-                                               search=research)
+                                               search=research, money_stuff=None)
                         time.sleep(1)
                 except RetryAfter as r:
                     logging.error("telegram chat id: %s RetryAfter error im waiting for %s", chat.telegram_id,

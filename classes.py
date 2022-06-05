@@ -1,4 +1,6 @@
 # classes
+from types import SimpleNamespace
+
 from bson import ObjectId
 
 
@@ -14,6 +16,24 @@ def common_init(self, d=None):
                 if isinstance(value[0], dict):
                     continue
             setattr(self, key, value)
+
+
+class Price:
+    def __init__(self, d=None):
+        common_init(self, d)
+
+    description: str
+    value: float
+
+
+# home
+class HomeReference:
+    def __init__(self, d=None):
+        common_init(self, d)
+
+        _id: ObjectId = None
+        home_id: ObjectId = None
+        home_id_from_site = None
 
 
 class Home:
@@ -38,6 +58,45 @@ class Home:
 
     def get_price(self):
         return self.price
+
+
+# Money stuffs and cash calculation
+
+class FixedCost:
+    def __init__(self, d=None):
+        common_init(self, d)
+
+    bank: int = None
+    notary: int = None
+
+
+class MoneyStuffCase:
+    def __init__(self, d=None):
+        common_init(self, d)
+
+    description: str
+    base_price: float
+    mortgage_percentage: int
+    mortgage_cash_needed: int
+    mortgage_money_to_be_requested: int
+    agency_commission: int
+    fixed_costs_bank: int
+    fixed_costs_notary: int
+    fixed_costs_total: int
+    total_cash_needed: int
+    total_cash_left: int
+
+
+class MoneyStuff:
+    def __init__(self, d=None):
+        common_init(self, d)
+
+    _id: ObjectId = None
+    telegram_chat_id = None
+    cash_held: int = None
+    fixed_costs: FixedCost = FixedCost()
+    cases: [MoneyStuffCase] = [MoneyStuffCase()]
+    home_reference: HomeReference
 
 
 class Site:
@@ -140,6 +199,19 @@ class Job:
     chat_id: ObjectId = None
 
 
+class UserConfig:
+    def __init__(self, d=None):
+        common_init(self, d)
+
+    _id: ObjectId = None
+    cash_held: int = None
+    mortgage_percentages: [int]
+    agency_percentage: int
+    agency_percentage_vat_percentage: int
+    fixed_costs_bank: int
+    fixed_costs_notary: int
+
+
 class Chat:
     def __init__(self, d=None):
         common_init(self, d)
@@ -149,3 +221,20 @@ class Chat:
     date_of_creation = None
     jobs_id: [ObjectId]
     homes_found_id: [ObjectId]
+    user_config_id: ObjectId = None
+
+
+class Button:
+    def __init__(self, d=None):
+        common_init(self, d)
+
+    text: str = None
+    callback_function: str = None
+    parameters: str = None
+    url: str = None
+
+
+# extend python class
+class SimpleNamespaceCustom(SimpleNamespace):
+    def __getattr__(self, name):
+            return "Attribute '{}' doesnt exist".format(str(name))

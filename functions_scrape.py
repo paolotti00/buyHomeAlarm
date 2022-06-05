@@ -4,7 +4,7 @@ from datetime import datetime
 import requests
 from bs4 import BeautifulSoup
 
-from classes import Home, Site, Search
+from classes import Home, Site, Search, UserConfig
 from constants import IMMOBILIARE_SITE_NAME, IDEALISTA_SITE_NAME, CASA_IT_SITE_NAME
 from functions_config import get_config, get_supported_site_conf
 from functions_repository import Repository
@@ -192,6 +192,7 @@ def get_data_casa_it(query_urls: [str], supported_site_conf) -> [Home]:
 
 
 def scrape_casa_it(soup, site: Site):
+    # todo check if no blocked
     homes_to_return = []
     items = soup.findAll("article")
     for item in items:
@@ -212,7 +213,7 @@ def scrape_casa_it(soup, site: Site):
         except (AttributeError, TypeError, KeyError) as e:
             pass
         try:
-            home_item.price = item.find("div", {"class": "info-features__price"}).find("p").text
+            home_item.price = item.find("div", {"class": "info-features__price"}, recursive=False).find("p").text
         except (AttributeError, TypeError, KeyError) as e:
             pass
         try:
