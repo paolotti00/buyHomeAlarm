@@ -23,7 +23,7 @@ class Price:
         common_init(self, d)
 
     description: str
-    value: int
+    value: float
 
 
 # home
@@ -75,7 +75,7 @@ class MoneyStuffCase:
         common_init(self, d)
 
     description: str
-    base_price: int
+    base_price: float
     mortgage_percentage: int
     mortgage_cash_needed: int
     mortgage_money_to_be_requested: int
@@ -230,7 +230,8 @@ class Button:
 
     text: str = None
     callback_function: str = None
-    parameters: str
+    parameters: str = None
+    url: str = None
 
 
 # extend python class

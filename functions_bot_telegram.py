@@ -46,8 +46,9 @@ def send_as_html_with_buttons(chat_telegram_id, text, disable_notification, butt
     if len(buttons) > 0:
         inline_keyboard_buttons: [InlineKeyboardButton] = []
         for received_button in buttons:
-            inline_keyboard_button = InlineKeyboardButton(text=received_button.text,
-                                                          callback_data=received_button.callback_function + ":" + received_button.parameters)
+            inline_keyboard_button = InlineKeyboardButton(text=str(received_button.text),
+                                                          callback_data=str(received_button.callback_function) + ":" + str(received_button.parameters),
+                                                          url=received_button.url if received_button.url is not None else None)
             inline_keyboard_buttons.append(inline_keyboard_button)
         keyboard_elements = [[element] for element in inline_keyboard_buttons]
     updater.bot.send_message(chat_id=chat_telegram_id, parse_mode=ParseMode.HTML, text=text,
@@ -90,7 +91,13 @@ def send_home(chat_telegram_id, disable_notification, home: Home, search: Search
         except AttributeError:
             # todo fixme find the way to avoid : AttributeError: 'types.SimpleNamespace' object has no attribute 'keywords'
             pass
+    # add buttons
     buttons = []
+    url_button: Button = Button()
+    url_button.url = home.link_detail
+    url_button.text = "vai a vederlo!"
+    buttons.append(url_button)
+
     if money_stuff is None:
         # button mortgage
         button_mortgage_calculation: Button = Button()
@@ -110,13 +117,10 @@ def send_home(chat_telegram_id, disable_notification, home: Home, search: Search
                    "\n" + \
                    "\n" + (get_money_stuff_as_html(money_stuff) if money_stuff else "") + "\n" + \
                    "\n" + \
-                   "<a href='{link_detail}'> vai a vederlo!</a>" + \
-                   "\n" + \
                    "- \n" + \
                    hashtags + \
                    "\n" + \
-                   "- \n" + \
-                   "- \n"
+                   " \n"
     text_to_send = text_to_send.format(origin_site=home.origin_site,
                                        search_title=search.title if search else "",
                                        title=home.title,
@@ -128,8 +132,7 @@ def send_home(chat_telegram_id, disable_notification, home: Home, search: Search
                                        n_rooms=home.n_rooms,
                                        n_bath_rooms=home.n_bath_rooms,
                                        date=home.date,
-                                       description=home.description,
-                                       link_detail=home.link_detail)
+                                       description=home.description)
     send_as_html_with_buttons(chat_telegram_id, disable_notification=disable_notification, text=text_to_send,
                               buttons=buttons)
 

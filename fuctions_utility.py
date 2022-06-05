@@ -1,5 +1,6 @@
 import os
 import time
+import re
 
 
 def start_sched_and_keep_alive(scheduler):
@@ -14,11 +15,22 @@ def start_sched_and_keep_alive(scheduler):
         scheduler.shutdown()
 
 
-def clean_price_and_convert_to_int(price: str) -> int:
+def clean_price_and_convert_to_int(price: str) -> float:
     # example € 298.000€ 330.000(-8,0%)
     # 298000 330000(-9,7%)
     # 298000
-    return int(price.replace("€", "").replace(".", "").strip().split(" ")[0].strip())
+    # example 2 Da € 228.000,00
+    # 228000,00
+    # 228000.00
+    # todo to be improve
+    price = price.replace("€", "")
+    price = price.replace(".", "")
+    price = re.sub(re.escape("da"), "", price, flags=re.IGNORECASE)
+    price = price.strip()
+    price = price.split(" ")[0]
+    price = price.replace(",", ".")
+    price = price.strip()
+    return float(price)
 
 
 def convert2serialize(obj):
