@@ -68,6 +68,10 @@ def main(job_id_mongo):
         for research in research_to_send:
             repository.save_many_homes(research.homes)
     else:
+        if job.send_in_chat:
+            chat: Chat = repository.get_chat(job.chat_id)
+            logging.info("sending msg in chat with id %s", chat.telegram_id)
+            bot_telegram.send_text("Ciao ho controllato ma non ho trovato nessuna nuova casa - rincotrollerò fra {} minuti <3".format(job.n_minutes_timer), chat.telegram_id)
         logging.info("no new search with new result retrieved, no new mail will be sent")
     logging.info("end")
 

@@ -13,7 +13,7 @@ from classes import Home, Search, MoneyStuff, MoneyStuffCase, Button, Chat, User
 from functions_cash import get_money_stuffs
 from functions_repository import Repository
 
-updater = Updater(functions_config.get_telegram_confing().bot.api_token, use_context=True)
+updater = None
 
 
 def start(update: Update, context: CallbackContext):
@@ -188,5 +188,7 @@ def get_money_stuff_as_html(money_stuff) -> str:
 
 
 def start_bot():
+    global updater
+    updater = Updater(functions_config.get_telegram_confing().bot.api_token, use_context=True)
     updater.dispatcher.add_handler(CallbackQueryHandler(button))
     updater.start_polling()

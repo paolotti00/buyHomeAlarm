@@ -22,14 +22,14 @@ def config_app():
     parser = argparse.ArgumentParser(description="buyhomealarm")
     # [Define arguments here]
     parser.add_argument('--environment', required=True,
-                        help="must specify " + Constant.ENV_ENVIROMENT_DEV_VALUE + "  or " + Constant.ENV_ENVIROMENT_DEV_VALUE)
+                        help="must specify " + Constant.ENV_ENVIROMENT_DEV_VALUE + "  or " + Constant.ENV_ENVIROMENT_PROD_VALUE)
     args = parser.parse_args()
     os.environ[Constant.ENV_ENVIROMENT_ENV] = args.environment
     logging.info('from cmd line --enviroment = %s', args.environment)
 
 
 def get_enviroment_env() -> str:
-    return os.getenv(Constant.ENV_ENVIROMENT_ENV) or Constant.DEFAULT_ENV or Constant.DEFAULT_ENV
+    return os.getenv(Constant.ENV_ENVIROMENT_ENV)
 
 
 def get_config() -> Config:
