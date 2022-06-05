@@ -47,7 +47,9 @@ def send_as_html_with_buttons(chat_telegram_id, text, disable_notification, butt
         inline_keyboard_buttons: [InlineKeyboardButton] = []
         for received_button in buttons:
             inline_keyboard_button = InlineKeyboardButton(text=str(received_button.text),
-                                                          callback_data=str(received_button.callback_function) + ":" + str(received_button.parameters),
+                                                          callback_data=str(
+                                                              received_button.callback_function) + ":" + str(
+                                                              received_button.parameters),
                                                           url=received_button.url if received_button.url is not None else None)
             inline_keyboard_buttons.append(inline_keyboard_button)
         keyboard_elements = [[element] for element in inline_keyboard_buttons]
@@ -115,8 +117,7 @@ def send_home(chat_telegram_id, disable_notification, home: Home, search: Search
                    "\n" + \
                    " {description}" + \
                    "\n" + \
-                   "\n" + (get_money_stuff_as_html(money_stuff) if money_stuff else "") + "\n" + \
-                   "\n" + \
+                   ("\n" + get_money_stuff_as_html(money_stuff) if money_stuff else "") + "\n" + \
                    "- \n" + \
                    hashtags + \
                    "\n" + \
