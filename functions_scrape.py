@@ -213,7 +213,7 @@ def scrape_casa_it(soup, site: Site):
         except (AttributeError, TypeError, KeyError) as e:
             pass
         try:
-            home_item.price = item.find("div", {"class": "info-features__price"}).find("p").text
+            home_item.price = item.find("div", {"class": "info-features__price"}, recursive=False).find("p").text
         except (AttributeError, TypeError, KeyError) as e:
             pass
         try:

@@ -25,7 +25,7 @@ def main(job_id_mongo):
     n_homes = 0
     job: Job = repository.get_job(job_id_mongo)
     logging.info("start job %s", job_id_mongo)
-    searches = []
+    # searches = []
     searches = scrape_data(job_id_mongo)
     for research in searches:
         research.homes = get_only_the_new_homes(research.homes)
