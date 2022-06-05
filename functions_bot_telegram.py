@@ -120,6 +120,7 @@ def send_home(chat_telegram_id, disable_notification, home: Home, search: Search
                    "- \n" + \
                    hashtags + \
                    "\n" + \
+                   "<a href='{link_detail}'>. </a>" + \
                    " \n"
     text_to_send = text_to_send.format(origin_site=home.origin_site,
                                        search_title=search.title if search else "",
@@ -132,7 +133,8 @@ def send_home(chat_telegram_id, disable_notification, home: Home, search: Search
                                        n_rooms=home.n_rooms,
                                        n_bath_rooms=home.n_bath_rooms,
                                        date=home.date,
-                                       description=home.description)
+                                       description=home.description,
+                                       link_detail=home.link_detail)
     send_as_html_with_buttons(chat_telegram_id, disable_notification=disable_notification, text=text_to_send,
                               buttons=buttons)
 
@@ -142,6 +144,8 @@ def get_money_stuff_as_html(money_stuff) -> str:
     user_chat_config: UserConfig = repository.get_user_config_by_id_telegram_chat_id(money_stuff.telegram_chat_id)
     to_return: str = "--------------------------------------- \n" + \
                      "--------------------------------------- \n" + \
+                     "\n" + \
+                     "\n" + \
                      "CALCOLI MONETARI: \n" + \
                      "<b>contanti posseduti:</b>" + str(user_chat_config.cash_held) + "\n" + \
                      "--------------------------------------- \n"
