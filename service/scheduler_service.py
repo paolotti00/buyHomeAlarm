@@ -1,8 +1,8 @@
 import logging
 from apscheduler.scheduler import Scheduler
 from datetime import datetime, timedelta
-from classes import Job
-from functions_repository import Repository
+from model.classes import Job
+from service.repository_service import Repository
 
 
 def configure_jobs(scheduler: Scheduler, callback) -> Scheduler:

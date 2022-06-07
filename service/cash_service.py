@@ -1,7 +1,7 @@
 import logging
-from classes import Home, UserConfig, Price, MoneyStuff, FixedCost, MoneyStuffCase, HomeReference, Chat
-from fuctions_utility import clean_price_and_convert_to_int
-from functions_repository import Repository
+from model.classes import Home, UserConfig, Price, MoneyStuff, FixedCost, MoneyStuffCase, HomeReference, Chat
+from service.utility_service import clean_price_and_convert_to_int
+from service.repository_service import Repository
 
 
 def calculate_prices(advertisement_price: str) -> [Price]:

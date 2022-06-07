@@ -3,13 +3,13 @@ import ssl
 import pymongo
 from bson import ObjectId
 
-import functions_config as func_conf
-from classes import Job, Search, Home, Chat, UserConfig, MoneyStuff, SimpleNamespaceCustom
+import service.config_service as func_conf
+from model.classes import Job, Search, Home, Chat, UserConfig, MoneyStuff, SimpleNamespaceCustom
 import logging
 import json
 
 
-from fuctions_utility import convert2serialize
+from service.utility_service import convert2serialize
 
 
 def save_many(collection, list_data: []):

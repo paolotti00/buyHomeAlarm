@@ -1,8 +1,5 @@
-from bson import ObjectId
-
-import functions_bot_telegram as bot_telegram
-from classes import Home
-from functions_repository import Repository
+from service import functions_bot_telegram as bot_telegram
+from service.functions_repository import Repository
 
 bot_telegram.start_bot()
 # bot_telegram.send_text("test1","-651042114")

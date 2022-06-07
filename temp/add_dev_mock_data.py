@@ -1,12 +1,10 @@
-from munch import Munch
 import ssl
-from datetime import datetime
 
 import pymongo
 from bson import ObjectId
 
 # from temp.classes import Job, Search, Site, Chat
-from classes import Job, Search, Site, Chat
+from model.classes import Search
 
 client = pymongo.MongoClient(
     "mongodb+srv://buyhomealarm_app_pi_dev:AcCyAZyX6H9H3EJ@cluster0.oh329.mongodb.net/buyhomealarm_db?retryWrites=true&w=majority",

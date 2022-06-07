@@ -1,13 +1,15 @@
 import yaml
 import os
 from yaml import UnsafeLoader
-import constants as Constant
-from classes import Config, Search, Site
+from constant import constants as Constant
+from model.classes import Config, Search, Site
 import argparse
 import logging
 
-
 # this function permit to convert a dict to object recursively #https://joelmccune.com/python-dictionary-as-object/
+configFolder = "config"
+
+
 class DictObj:
     def __init__(self, in_dict: dict):
         assert isinstance(in_dict, dict)
@@ -40,7 +42,7 @@ def get_config() -> Config:
         config_file_name = Constant.CONFIG_FILE_DEV_NAME
     elif environment == Constant.ENV_ENVIROMENT_PROD_VALUE:
         config_file_name = Constant.CONFIG_FILE_PROD_NAME
-    with open(config_file_name, "r") as ymlfile:
+    with open(configFolder+os.path.sep+config_file_name, "r") as ymlfile:
         cfg = yaml.load(ymlfile, Loader=UnsafeLoader)
         # to_return = namedtuple('struct', cfg.keys())(*cfg.values())
         to_return = DictObj(cfg)

@@ -1,13 +1,12 @@
 import logging
-from datetime import datetime
 
 import requests
 from bs4 import BeautifulSoup
 
-from classes import Home, Site, Search, UserConfig
-from constants import IMMOBILIARE_SITE_NAME, IDEALISTA_SITE_NAME, CASA_IT_SITE_NAME
-from functions_config import get_config, get_supported_site_conf
-from functions_repository import Repository
+from model.classes import Home, Site, Search
+from constant.constants import IMMOBILIARE_SITE_NAME, IDEALISTA_SITE_NAME, CASA_IT_SITE_NAME
+from service.config_service import get_supported_site_conf
+from service.repository_service import Repository
 
 
 def get_soup(url):

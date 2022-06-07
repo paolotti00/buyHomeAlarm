@@ -3,15 +3,11 @@ from telegram.ext import CallbackQueryHandler
 from telegram.ext.updater import Updater
 from telegram.update import Update
 from telegram.ext.callbackcontext import CallbackContext
-from telegram.ext.commandhandler import CommandHandler
-from telegram.ext.messagehandler import MessageHandler
-from telegram.ext.filters import Filters
-import logging
 
-import functions_config
-from classes import Home, Search, MoneyStuff, MoneyStuffCase, Button, Chat, UserConfig
-from functions_cash import get_money_stuffs
-from functions_repository import Repository
+from model.classes import Home, Search, MoneyStuff, Button, UserConfig
+from service import config_service
+from service.cash_service import get_money_stuffs
+from service.repository_service import Repository
 
 updater = None
 
@@ -190,6 +186,6 @@ def get_money_stuff_as_html(money_stuff) -> str:
 
 def start_bot():
     global updater
-    updater = Updater(functions_config.get_telegram_confing().bot.api_token, use_context=True)
+    updater = Updater(config_service.get_telegram_confing().bot.api_token, use_context=True)
     updater.dispatcher.add_handler(CallbackQueryHandler(button))
     updater.start_polling()

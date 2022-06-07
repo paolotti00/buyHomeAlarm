@@ -5,14 +5,13 @@ import logging
 
 from telegram.error import RetryAfter
 
-from classes import Job, Chat
-from fuctions_utility import start_sched_and_keep_alive
-from functions_config import get_config, config_app
-import functions_bot_telegram as bot_telegram
-from functions_email import Mail, render_email_template
-from functions_repository import Repository
-from functions_scheduler import configure_jobs
-from functions_scrape import scrape_data, get_only_the_new_homes, order_home_by_price
+from model.classes import Job, Chat
+from service.config_service import get_config, config_app
+from service import bot_telegram_service as bot_telegram
+from service.email_service import Mail, render_email_template
+from service.repository_service import Repository
+from service.scheduler_service import configure_jobs
+from service.scrape_service import scrape_data, get_only_the_new_homes
 
 emails_to_send = ["pa.tripodi@hotmail.it", "denisediprima@virgilio.it"]
 
