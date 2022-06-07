@@ -27,6 +27,12 @@ def do_searches(job_id_mongo):
         if len(research.homes) > 0:
             n_homes = n_homes + len(research.homes)
             research_to_send.append(research)
+    send_results(research_to_send, n_homes, job)
+    logging.info("end")
+
+
+def send_results(research_to_send: [], n_homes: int, job: Job):
+    repository = Repository()
     if len(research_to_send) > 0:
         logging.info("there are %s searches with result, new mail and/or message in chat will be sent",
                      len(research_to_send))
@@ -69,5 +75,4 @@ def do_searches(job_id_mongo):
             bot_telegram.send_text(
                 "Ciao ho controllato ma non ho trovato nessuna nuova casa - rincotrollerò fra {} minuti <3".format(
                     job.n_minutes_timer), chat.telegram_id, True)
-        logging.info("no new search with new result retrieved, no new mail will be sent")
-    logging.info("end")
+            logging.info("no new search with new result retrieved")
