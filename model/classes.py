@@ -185,18 +185,27 @@ class Config:
 
 # telegram bot
 
-class Job:
+class ActionSearchHome:  # todo create the collection
     def __init__(self, d=None):
         common_init(self, d)
 
     _id: ObjectId = None
     searches_id: [ObjectId]
     target_emails: [str]
-    active: bool = None
-    n_minutes_timer: int = None
     send_email: bool = None
     send_in_chat: bool = None
     chat_id: ObjectId = None
+    type: str  # example : ActionSearchHome ecc
+
+
+class Job:
+    def __init__(self, d=None):
+        common_init(self, d)
+
+    _id: ObjectId = None
+    active: bool = None
+    n_minutes_timer: int = None
+    action_id: str = [ObjectId]
 
 
 class UserConfig:
@@ -237,4 +246,4 @@ class Button:
 # extend python class
 class SimpleNamespaceCustom(SimpleNamespace):
     def __getattr__(self, name):
-            return "Attribute '{}' doesnt exist".format(str(name))
+        return "Attribute '{}' doesnt exist".format(str(name))

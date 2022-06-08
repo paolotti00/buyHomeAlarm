@@ -8,7 +8,6 @@ from model.classes import Job, Search, Home, Chat, UserConfig, MoneyStuff, Simpl
 import logging
 import json
 
-
 from service.utility_service import convert2serialize
 
 
@@ -43,6 +42,7 @@ class Repository:
         self.homes_collection = mydb["home"]
         self.home_money_stuff_collection = mydb["homeMoneyStuff"]
         self.jobs_collection = mydb["job"]
+        self.action_collection = mydb["action"]  # todo create the collection
         self.searches_collection = mydb["search"]
         self.user_config = mydb["userChatConfig"]
 
@@ -97,8 +97,13 @@ class Repository:
 
     def get_money_stuff_by_home_id_from_site_and_chat_telegram_id(self, home_id_from_site,
                                                                   chat_telegram_id) -> MoneyStuff:
-        result = self.home_money_stuff_collection.find_one({'chat_id': chat_telegram_id, 'homeReference.home_id_from_site': home_id_from_site})
+        result = self.home_money_stuff_collection.find_one(
+            {'chat_id': chat_telegram_id, 'homeReference.home_id_from_site': home_id_from_site})
         return from_dict_to_object(result)
 
     def save_money_stuff(self, money_stuff: MoneyStuff):
         save_one(self.home_money_stuff_collection, money_stuff)
+
+    def get_action(self, action_id):
+        result = self.action_collection.find_one({'_id': {'$eq': ObjectId(action_id)}})
+        return from_dict_to_object(result)
