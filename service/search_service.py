@@ -3,7 +3,7 @@ import time
 
 from telegram.error import RetryAfter
 
-from model.classes import Job, Chat
+from model.classes import Job, Chat, ActionSearchHome, Search
 from service.config_service import get_config
 from service.email_service import Mail, render_email_template
 from service.repository_service import Repository
@@ -13,36 +13,36 @@ from service import bot_telegram_service as bot_telegram
 emails_to_send = ["pa.tripodi@hotmail.it", "denisediprima@virgilio.it"]  # todo delete it
 
 
-def do_searches(job_id_mongo):
+def do_searches(job_id_mongo, action: ActionSearchHome):
     repository = Repository()
     research_to_send: [] = []
     n_homes = 0
     job: Job = repository.get_job(job_id_mongo)
     logging.info("start job %s", job_id_mongo)
-    # searches = []
-    searches = scrape_data(job_id_mongo)
+    searches: [Search] = repository.get_searches(action.searches_ids)
+    searches = scrape_data(searches)
     for research in searches:
         research.homes = get_only_the_new_homes(research.homes)
         # research.homes = order_home_by_price(research.homes) todo fix TypeError: '<' not supported between instances of 'NoneType' and 'NoneType'
         if len(research.homes) > 0:
             n_homes = n_homes + len(research.homes)
             research_to_send.append(research)
-    send_results(research_to_send, n_homes, job)
+    send_results(research_to_send, n_homes, job, action)
     logging.info("end")
 
 
-def send_results(research_to_send: [], n_homes: int, job: Job):
+def send_results(research_to_send: [], n_homes: int, job: Job, action: ActionSearchHome):
     repository = Repository()
     if len(research_to_send) > 0:
         logging.info("there are %s searches with result, new mail and/or message in chat will be sent",
                      len(research_to_send))
-        if job.send_email:
+        if action.send_email:
             logging.info("sending email")
             # send email
             Mail().send(emails_to_send, get_config().email.subject,
                         render_email_template("email_jinja_template.html", searches=research_to_send, n_homes=n_homes))
-        if job.send_in_chat:
-            chat: Chat = repository.get_chat(job.chat_id)
+        if action.send_in_chat:
+            chat: Chat = repository.get_chat(action.chat_id)
             logging.info("sending in chat with id %s", chat.telegram_id)
             bot_telegram.send_text("ho trovato {} case".format(n_homes), chat.telegram_id, False)
             for research in research_to_send:
@@ -69,8 +69,8 @@ def send_results(research_to_send: [], n_homes: int, job: Job):
         for research in research_to_send:
             repository.save_many_homes(research.homes)
     else:
-        if job.send_in_chat:
-            chat: Chat = repository.get_chat(job.chat_id)
+        if action.send_in_chat:
+            chat: Chat = repository.get_chat(action.chat_id)
             logging.info("sending msg in chat with id %s", chat.telegram_id)
             bot_telegram.send_text(
                 "Ciao ho controllato ma non ho trovato nessuna nuova casa - rincotrollerò fra {} minuti <3".format(

@@ -9,10 +9,9 @@ from service.scrape_idealista_service import get_data_idealista
 from service.scrape_immobiliare_service import get_data_immobiliare
 
 
-def scrape_data(job_id) -> [Search]:
+def scrape_data(searches: [Search]) -> [Search]:
     repository = Repository()
     logging.info("start to get data from searches")
-    searches: [Search] = repository.get_searches_from_job_id(job_id)
     n_homes_found = 0
     for search in searches:
         homes_to_return = []

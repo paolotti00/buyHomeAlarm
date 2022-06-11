@@ -190,7 +190,7 @@ class ActionSearchHome:  # todo create the collection
         common_init(self, d)
 
     _id: ObjectId = None
-    searches_id: [ObjectId]
+    searches_ids: [ObjectId]
     target_emails: [str]
     send_email: bool = None
     send_in_chat: bool = None
@@ -205,7 +205,7 @@ class Job:
     _id: ObjectId = None
     active: bool = None
     n_minutes_timer: int = None
-    action_id: str = [ObjectId]
+    action_id: str = ObjectId
 
 
 class UserConfig:

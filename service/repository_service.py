@@ -66,18 +66,11 @@ class Repository:
         result = self.searches_collection.find_one({'_id': {'$eq': ObjectId(search_id_mongo)}})
         return from_dict_to_object(result)
 
-    def get_searches_from_job_id(self, job_id_mongo) -> [Search]:
-        searches: [Search] = []
-        searches_ids = self.get_job(job_id_mongo).searches_id
-        for searches_id_mongo in searches_ids:
-            searches.append(self.get_search(searches_id_mongo))
-        return searches
-
     def get_searches(self, searches_ids: []) -> [Search]:
         searches: [Search] = []
         for searches_id in searches_ids:
-            searches.append(list(self.jobs_collection.find({'_id': {'$eq': ObjectId(searches_id)}})))
-        return from_cursors_to_list_object(searches, Search)
+            searches.append(self.get_search(searches_id))
+        return searches
 
     def get_chat(self, chat_id_mongo) -> Chat:
         result = self.chat_collection.find_one({'_id': {'$eq': ObjectId(chat_id_mongo)}})
