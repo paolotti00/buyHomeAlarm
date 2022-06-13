@@ -1,0 +1,15 @@
+search : {
+priceMin:000,
+priceMax:000,
+mt2Min:000,
+mt2Max:000,
+zones:[""],
+mustHave:[], maybe i should do a object with must have options
+floor:0,
+excludeAuction:bool
+
+}
+
+i need a method in order to translate from HomeUserSearch to sites search
+
+remember to link the HomeUserSearch to all

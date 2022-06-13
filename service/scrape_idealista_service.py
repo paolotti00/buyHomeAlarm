@@ -4,6 +4,7 @@ from model.classes import Home, Site
 
 # idealista
 import service.scrape_soup_utility_service as scrape_soup_utility_service
+from model.search_home_classes import HomeUserSearch
 
 
 def get_data_idealista(query_urls: [str], supported_site_conf) -> [Home]:
@@ -62,3 +63,9 @@ def scrape_idealista(soup, site: Site):
         # add element
         homes_to_return.append(home_item)
     return homes_to_return
+
+
+def convert_to_site(home_user_search: HomeUserSearch) -> Site:
+    # todo
+    to_return: Site = Site()
+    return to_return

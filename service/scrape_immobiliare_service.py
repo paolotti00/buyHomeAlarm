@@ -4,6 +4,9 @@ from model.classes import Home, Site
 
 
 # immobiliare
+from model.search_home_classes import HomeUserSearch
+
+
 def get_data_immobiliare(query_urls: [str], supported_site_conf: Site) -> [Home]:
     logging.info("start to elaborate '%s' site", supported_site_conf.site_name)
     # todo fix the empty case
@@ -81,3 +84,9 @@ def scrape_immobiliare(soup, site: Site) -> [Home]:
         # add element
         homes_to_return.append(home_item)
     return homes_to_return
+
+
+def convert_to_site(home_user_search: HomeUserSearch) -> Site:
+    # todo
+    to_return: Site = Site()
+    return to_return

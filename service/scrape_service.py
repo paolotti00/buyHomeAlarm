@@ -1,12 +1,13 @@
 import logging
 
-from model.classes import Home, Site, Search
+from model.classes import Site, Search
 from constant.constants import IMMOBILIARE_SITE_NAME, IDEALISTA_SITE_NAME, CASA_IT_SITE_NAME
+from model.search_home_classes import Home, HomeUserSearch
 from service.config_service import get_supported_site_conf
 from service.repository_service import Repository
-from service.scrape_casa_it_service import get_data_casa_it
-from service.scrape_idealista_service import get_data_idealista
-from service.scrape_immobiliare_service import get_data_immobiliare
+import scrape_immobiliare_service as immobiliare_service
+import scrape_idealista_service as idealista_service
+import scrape_casa_it_service as casa_it_service
 
 
 def scrape_data(searches: [Search]) -> [Search]:
@@ -20,11 +21,14 @@ def scrape_data(searches: [Search]) -> [Search]:
             if site.query_urls and len(site.query_urls) > 0:
                 logging.info("start to elaborate site %s, it have %s query_urls", site.site_name, len(site.query_urls))
                 if site.site_name.casefold() == IMMOBILIARE_SITE_NAME.casefold():
-                    homes_to_return += get_data_immobiliare(site.query_urls, get_supported_site_conf(site.site_name))
+                    homes_to_return += immobiliare_service.get_data_immobiliare(site.query_urls,
+                                                                                get_supported_site_conf(site.site_name))
                 elif site.site_name.casefold() == IDEALISTA_SITE_NAME.casefold():
-                    homes_to_return += get_data_idealista(site.query_urls, get_supported_site_conf(site.site_name))
+                    homes_to_return += idealista_service.get_data_idealista(site.query_urls,
+                                                                            get_supported_site_conf(site.site_name))
                 elif site.site_name.casefold() == CASA_IT_SITE_NAME.casefold():
-                    homes_to_return += get_data_casa_it(site.query_urls, get_supported_site_conf(site.site_name))
+                    homes_to_return += casa_it_service.get_data_casa_it(site.query_urls,
+                                                                        get_supported_site_conf(site.site_name))
             else:
                 logging.info("no query_urls in search %s site %s", search.title, site.site_name)
         search.homes = homes_to_return
@@ -53,3 +57,15 @@ def order_home_by_price(homes: [Home]):
 
 def check_if_already_sent_it():
     return True
+
+
+def convert_to_search_sites(site_name: str,
+                            home_user_search: HomeUserSearch) -> Site:  # probably is not site that should be used
+    site: Site = Site()
+    if site_name.casefold() == IMMOBILIARE_SITE_NAME.casefold():
+        site = immobiliare_service.convert_to_site(home_user_search)
+    elif site.site_name.casefold() == IDEALISTA_SITE_NAME.casefold(home_user_search):
+        site = immobiliare_service.convert_to_site(home_user_search)
+    elif site.site_name.casefold() == CASA_IT_SITE_NAME.casefold(home_user_search):
+        site = immobiliare_service.convert_to_site(home_user_search)
+    return site
