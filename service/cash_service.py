@@ -1,5 +1,6 @@
 import logging
-from model.classes import Home, UserConfig, Price, MoneyStuff, FixedCost, MoneyStuffCase, HomeReference, Chat
+from model.classes import  UserConfig, Chat
+from model.search_home_classes import Home, Price, MoneyStuff, FixedCost, MoneyStuffCase, HomeReference
 from service.utility_service import clean_price_and_convert_to_int
 from service.repository_service import Repository
 

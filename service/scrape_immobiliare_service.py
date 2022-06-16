@@ -1,10 +1,10 @@
 import logging
 import service.scrape_soup_utility_service as scrape_soup_utility_service
-from model.classes import Home, Site
+from model.classes import Site
+from model.search_home_classes import HomeUserSearch, Home
 
 
 # immobiliare
-from model.search_home_classes import HomeUserSearch
 
 
 def get_data_immobiliare(query_urls: [str], supported_site_conf: Site) -> [Home]:

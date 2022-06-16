@@ -4,7 +4,8 @@ import pymongo
 from bson import ObjectId
 
 import service.config_service as func_conf
-from model.classes import Job, Search, Home, Chat, UserConfig, MoneyStuff, SimpleNamespaceCustom
+from model.classes import Job, Search,  Chat, UserConfig, SimpleNamespaceCustom
+from model.search_home_classes import Home,  MoneyStuff
 import logging
 import json
 

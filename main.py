@@ -1,13 +1,14 @@
 import logging
 
-from apscheduler.scheduler import Scheduler
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from apscheduler.schedulers.background import BackgroundScheduler
 
 from service import bot_telegram_service as bot_telegram
 from service.config_service import get_config, config_app
 from service.scheduler_service import configure_jobs
 
 
-scheduler = Scheduler()
+scheduler = AsyncIOScheduler(timezone="Europe/Berlin")
 
 # start
 logging.basicConfig(filename='app.log', filemode='a', format='%(asctime)s - %(levelname)s - %(message)s',

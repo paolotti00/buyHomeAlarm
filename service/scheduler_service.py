@@ -1,6 +1,8 @@
 import logging
-from apscheduler.scheduler import Scheduler
 from datetime import datetime, timedelta
+
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from apscheduler.schedulers.background import BackgroundScheduler
 
 from constant.constants import ACTION_TYPE_SEARCH_HOME
 from model.classes import Job
@@ -8,7 +10,7 @@ from service.repository_service import Repository
 from service.search_service import do_searches
 
 
-def configure_jobs(scheduler: Scheduler) -> Scheduler:
+def configure_jobs(scheduler: AsyncIOScheduler) -> AsyncIOScheduler:
     repository = Repository()
     jobs: [Job] = repository.get_active_jobs()
     if len(jobs) > 0:
@@ -24,9 +26,10 @@ def configure_jobs(scheduler: Scheduler) -> Scheduler:
                 logging.error("error: %s action is not supported", action.type)
             if callback is not None:
                 start_date = datetime.now() + timedelta(seconds=5)
-                scheduler.add_interval_job(callback, args=[job._id, action], minutes=job.n_minutes_timer,
-                                           start_date=start_date)
-                logging.info("job id: %s with action type :%s start date: %s running every %s minutes was configured ", job._id, action.type, start_date, job.n_minutes_timer)
+                scheduler.add_job(callback, args=[job._id, action], trigger='interval',minutes=job.n_minutes_timer,
+                                  start_date=start_date)
+                logging.info("job id: %s with action type :%s start date: %s running every %s minutes was configured ",
+                             job._id, action.type, start_date, job.n_minutes_timer)
             else:
                 logging.info("no supported action found, job was configured")
         logging.info("all jobs was configured")

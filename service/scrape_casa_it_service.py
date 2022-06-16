@@ -1,10 +1,11 @@
 import logging
 
-from model.classes import Home, Site
+from model.classes import Site
 import service.scrape_soup_utility_service as scrape_soup_utility_service
+from model.search_home_classes import HomeUserSearch, Home
+
 
 # casa it
-from model.search_home_classes import HomeUserSearch
 
 
 def get_data_casa_it(query_urls: [str], supported_site_conf) -> [Home]:

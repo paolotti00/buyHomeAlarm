@@ -1,10 +1,9 @@
-from telegram import ParseMode, InlineKeyboardButton, InlineKeyboardMarkup
-from telegram.ext import CallbackQueryHandler
-from telegram.ext.updater import Updater
-from telegram.update import Update
-from telegram.ext.callbackcontext import CallbackContext
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram.constants import ParseMode
+from telegram.ext import CallbackContext, Updater, CallbackQueryHandler, ApplicationBuilder, ContextTypes
 
-from model.classes import Home, Search, MoneyStuff, Button, UserConfig
+from model.classes import Search, Button, UserConfig
+from model.search_home_classes import Home, MoneyStuff
 from service import config_service
 from service.cash_service import get_money_stuffs
 from service.repository_service import Repository
@@ -28,16 +27,16 @@ def unknown(update: Update, context: CallbackContext):
     update.message.reply_text("Sorry '%s' is not a valid command" % update.message.text)
 
 
-def send_text(msg, chat_telegram_id, disable_notification: bool):
-    updater.bot.send_message(chat_id=chat_telegram_id, text=msg, disable_notification=disable_notification)
+async def send_text(msg, chat_telegram_id, disable_notification: bool):
+    await app.bot.send_message(chat_id=chat_telegram_id, text=msg, disable_notification=disable_notification)
 
 
-def send_as_html(chat_telegram_id, text, disable_notification):
-    updater.bot.send_message(chat_id=chat_telegram_id, parse_mode=ParseMode.HTML, text=text,
-                             disable_notification=disable_notification)
+async def send_as_html(chat_telegram_id, text, disable_notification):
+    await app.bot.send_message(chat_id=chat_telegram_id, parse_mode=ParseMode.HTML, text=text,
+                               disable_notification=disable_notification)
 
 
-def send_as_html_with_buttons(chat_telegram_id, text, disable_notification, buttons: [Button]):
+async def send_as_html_with_buttons(chat_telegram_id, text, disable_notification, buttons: [Button]):
     keyboard_elements = []
     if len(buttons) > 0:
         inline_keyboard_buttons: [InlineKeyboardButton] = []
@@ -49,20 +48,20 @@ def send_as_html_with_buttons(chat_telegram_id, text, disable_notification, butt
                                                           url=received_button.url if received_button.url is not None else None)
             inline_keyboard_buttons.append(inline_keyboard_button)
         keyboard_elements = [[element] for element in inline_keyboard_buttons]
-    updater.bot.send_message(chat_id=chat_telegram_id, parse_mode=ParseMode.HTML, text=text,
-                             disable_notification=disable_notification,
-                             reply_markup=InlineKeyboardMarkup(inline_keyboard=keyboard_elements))
+    await app.bot.send_message(chat_id=chat_telegram_id, parse_mode=ParseMode.HTML, text=text,
+                               disable_notification=disable_notification,
+                               reply_markup=InlineKeyboardMarkup(inline_keyboard=keyboard_elements))
 
 
 # buttons callbacks
-def do_money_stuff_calculation(query, parameters: str):
+async def do_money_stuff_calculation(query, parameters: str):
     # parameters
     repository = Repository()
     chat_telegram_id = parameters.split(",")[0]
     home_id_from_site = parameters.split(",")[1]
     home = repository.get_home_by_id_from_site(home_id_from_site)[0]
     money_stuff = get_money_stuffs(home, chat_telegram_id)
-    send_home(chat_telegram_id, False, home, None, money_stuff)
+    await send_home(chat_telegram_id, False, home, None, money_stuff)
 
 
 supported_buttons = {
@@ -80,7 +79,7 @@ def button(update: Update, context) -> None:
 
 # no callback functions:
 
-def send_home(chat_telegram_id, disable_notification, home: Home, search: Search, money_stuff: MoneyStuff):
+async def send_home(chat_telegram_id, disable_notification, home: Home, search: Search, money_stuff: MoneyStuff):
     hashtags = ""
     if search is not None:
         try:
@@ -133,8 +132,8 @@ def send_home(chat_telegram_id, disable_notification, home: Home, search: Search
                                        date=home.date,
                                        description=home.description,
                                        link_detail=home.link_detail)
-    send_as_html_with_buttons(chat_telegram_id, disable_notification=disable_notification, text=text_to_send,
-                              buttons=buttons)
+    await send_as_html_with_buttons(chat_telegram_id, disable_notification=disable_notification, text=text_to_send,
+                                    buttons=buttons)
 
 
 def get_money_stuff_as_html(money_stuff) -> str:
@@ -185,7 +184,7 @@ def get_money_stuff_as_html(money_stuff) -> str:
 
 
 def start_bot():
-    global updater
-    updater = Updater(config_service.get_telegram_confing().bot.api_token, use_context=True)
-    updater.dispatcher.add_handler(CallbackQueryHandler(button))
-    updater.start_polling()
+    global app
+    app = ApplicationBuilder().token(config_service.get_telegram_confing().bot.api_token).build()
+    app.add_handler(CallbackQueryHandler(button))
+    app.run_polling()
