@@ -1,6 +1,9 @@
+import logging
+
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.constants import ParseMode
-from telegram.ext import CallbackContext, Updater, CallbackQueryHandler, ApplicationBuilder, ContextTypes
+from telegram.ext import CallbackContext, Updater, CallbackQueryHandler, ApplicationBuilder, ContextTypes, \
+    ConversationHandler, MessageHandler, CommandHandler, filters
 
 from model.classes import Search, Button, UserConfig
 from model.search_home_classes import Home, MoneyStuff
@@ -9,6 +12,7 @@ from service.cash_service import get_money_stuffs
 from service.repository_service import Repository
 
 updater = None
+TEST, TEST1 = range(2)
 
 
 def start(update: Update, context: CallbackContext):
@@ -64,8 +68,27 @@ async def do_money_stuff_calculation(query, parameters: str):
     await send_home(chat_telegram_id, False, home, None, money_stuff)
 
 
+async def test(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text(
+        'You seem a bit paranoid! At last, tell me something about yourself.'
+    )
+    return TEST1
+
+
+async def test1(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    logging.info(update.message.text)
+    await update.message.reply_text(
+        update.message.text
+    )
+
+
+def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    logging.info(update.message.text)
+
+
 supported_buttons = {
-    "money_stuff_calculations": do_money_stuff_calculation
+    "money_stuff_calculations": do_money_stuff_calculation,
+    "test": test
 
 }
 
@@ -99,7 +122,7 @@ async def send_home(chat_telegram_id, disable_notification, home: Home, search: 
         # button mortgage
         button_mortgage_calculation: Button = Button()
         button_mortgage_calculation.text = "fammi i calcoli"
-        button_mortgage_calculation.callback_function = "money_stuff_calculations"
+        button_mortgage_calculation.callback_function = "test"
         button_mortgage_calculation.parameters = chat_telegram_id + "," + home.id_from_site
         buttons.append(button_mortgage_calculation)
     text_to_send = "<b>da: </b> {origin_site} | <b>ricerca:</b> {search_title} \n \n" + \
@@ -173,18 +196,18 @@ def get_money_stuff_as_html(money_stuff) -> str:
     return to_return
 
 
-# updater.dispatcher.add_handler(CommandHandler('start', start))
-
-
-# updater.dispatcher.add_handler(MessageHandler(Filters.text, unknown))
-# Filters out unknown commands
-# updater.dispatcher.add_handler(MessageHandler(Filters.command, unknown))
-# Filters out unknown messages.
-# updater.dispatcher.add_handler(MessageHandler(Filters.text, unknown_text))
+conv_handler = ConversationHandler(
+    entry_points=[CommandHandler(test)],
+    states={
+        TEST1: [MessageHandler(filters.ALL, test1)],
+    },
+    fallbacks=[CommandHandler("cancel", cancel)],
+)
 
 
 def start_bot():
     global app
     app = ApplicationBuilder().token(config_service.get_telegram_confing().bot.api_token).build()
     app.add_handler(CallbackQueryHandler(button))
+    app.add_handler(conv_handler)
     app.run_polling()

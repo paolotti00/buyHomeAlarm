@@ -16,21 +16,22 @@ def scrape_data(searches: [Search]) -> [Search]:
     n_homes_found = 0
     for search in searches:
         homes_to_return = []
+        homes_to_return.append(repository.get_home_by_id_from_site("immobiliare_link_ad_88643021")[0])
         logging.info("start to elaborate search %s", search.title)
-        for site in search.sites:
-            if site.query_urls and len(site.query_urls) > 0:
-                logging.info("start to elaborate site %s, it have %s query_urls", site.site_name, len(site.query_urls))
-                if site.site_name.casefold() == IMMOBILIARE_SITE_NAME.casefold():
-                    homes_to_return += get_data_immobiliare(site.query_urls,
-                                                            get_supported_site_conf(site.site_name))
-                elif site.site_name.casefold() == IDEALISTA_SITE_NAME.casefold():
-                    homes_to_return += get_data_idealista(site.query_urls,
-                                                          get_supported_site_conf(site.site_name))
-                elif site.site_name.casefold() == CASA_IT_SITE_NAME.casefold():
-                    homes_to_return += get_data_casa_it(site.query_urls,
-                                                        get_supported_site_conf(site.site_name))
-            else:
-                logging.info("no query_urls in search %s site %s", search.title, site.site_name)
+        # for site in search.sites:
+        #     if site.query_urls and len(site.query_urls) > 0:
+        #         logging.info("start to elaborate site %s, it have %s query_urls", site.site_name, len(site.query_urls))
+        #         if site.site_name.casefold() == IMMOBILIARE_SITE_NAME.casefold():
+        #             homes_to_return += get_data_immobiliare(site.query_urls,
+        #                                                     get_supported_site_conf(site.site_name))
+        #         elif site.site_name.casefold() == IDEALISTA_SITE_NAME.casefold():
+        #             homes_to_return += get_data_idealista(site.query_urls,
+        #                                                   get_supported_site_conf(site.site_name))
+        #         elif site.site_name.casefold() == CASA_IT_SITE_NAME.casefold():
+        #             homes_to_return += get_data_casa_it(site.query_urls,
+        #                                                 get_supported_site_conf(site.site_name))
+        #     else:
+        #         logging.info("no query_urls in search %s site %s", search.title, site.site_name)
         search.homes = homes_to_return
         n_homes_found = n_homes_found + len(homes_to_return)
         logging.info("finished search %s", search.title)

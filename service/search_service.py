@@ -23,7 +23,7 @@ async def do_searches(job_id_mongo, action: ActionSearchHome):
     # searches = []
     searches = scrape_data(searches)
     for research in searches:
-        research.homes = get_only_the_new_homes(research.homes)
+        # research.homes = get_only_the_new_homes(research.homes)
         if len(research.homes) > 0:
             n_homes = n_homes + len(research.homes)
             research_to_send.append(research)
