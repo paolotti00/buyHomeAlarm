@@ -4,56 +4,32 @@ from telegram.ext import CallbackContext, Updater, CallbackQueryHandler, Applica
 
 from model.classes import Search, Button, UserConfig
 from model.search_home_classes import Home, MoneyStuff
-from service import config_service
 from service.cash_service import get_money_stuffs
 from service.repository_service import Repository
 
-updater = None
+# updater = None
 
 
-def start(update: Update, context: CallbackContext):
-    update.message.reply_text("ciao Denise")
-
-
-def help(update: Update, context: CallbackContext):
-    update.message.reply_text("Your Message")
-
-
-def unknown_text(update: Update, context: CallbackContext):
-    update.message.reply_text("Sorry I can't recognize you , you said '%s'" % update.message.text)
-
-
-def unknown(update: Update, context: CallbackContext):
-    update.message.reply_text("Sorry '%s' is not a valid command" % update.message.text)
-
-
-async def send_text(msg, chat_telegram_id, disable_notification: bool):
-    await app.bot.send_message(chat_id=chat_telegram_id, text=msg, disable_notification=disable_notification)
-
-
-async def send_as_html(chat_telegram_id, text, disable_notification):
-    await app.bot.send_message(chat_id=chat_telegram_id, parse_mode=ParseMode.HTML, text=text,
-                               disable_notification=disable_notification)
-
-
-async def send_as_html_with_buttons(chat_telegram_id, text, disable_notification, buttons: [Button]):
-    keyboard_elements = []
-    if len(buttons) > 0:
-        inline_keyboard_buttons: [InlineKeyboardButton] = []
-        for received_button in buttons:
-            inline_keyboard_button = InlineKeyboardButton(text=str(received_button.text),
-                                                          callback_data=str(
-                                                              received_button.callback_function) + ":" + str(
-                                                              received_button.parameters),
-                                                          url=received_button.url if received_button.url is not None else None)
-            inline_keyboard_buttons.append(inline_keyboard_button)
-        keyboard_elements = [[element] for element in inline_keyboard_buttons]
-    await app.bot.send_message(chat_id=chat_telegram_id, parse_mode=ParseMode.HTML, text=text,
-                               disable_notification=disable_notification,
-                               reply_markup=InlineKeyboardMarkup(inline_keyboard=keyboard_elements))
+# def start(update: Update, context: CallbackContext):
+#     update.message.reply_text("ciao Denise")
+#
+#
+# def help(update: Update, context: CallbackContext):
+#     update.message.reply_text("Your Message")
+#
+#
+# def unknown_text(update: Update, context: CallbackContext):
+#     update.message.reply_text("Sorry I can't recognize you , you said '%s'" % update.message.text)
+#
+#
+# def unknown(update: Update, context: CallbackContext):
+#     update.message.reply_text("Sorry '%s' is not a valid command" % update.message.text)
 
 
 # buttons callbacks
+from service.telegram_bot_service import send_text_with_buttons
+
+
 async def do_money_stuff_calculation(query, parameters: str):
     # parameters
     repository = Repository()
@@ -132,8 +108,9 @@ async def send_home(chat_telegram_id, disable_notification, home: Home, search: 
                                        date=home.date,
                                        description=home.description,
                                        link_detail=home.link_detail)
-    await send_as_html_with_buttons(chat_telegram_id, disable_notification=disable_notification, text=text_to_send,
-                                    buttons=buttons)
+    await send_text_with_buttons(chat_telegram_id, text=text_to_send, parse_mode=ParseMode.HTML,
+                                 disable_notification=disable_notification,
+                                 buttons=buttons)
 
 
 def get_money_stuff_as_html(money_stuff) -> str:
@@ -172,7 +149,6 @@ def get_money_stuff_as_html(money_stuff) -> str:
         )
     return to_return
 
-
 # updater.dispatcher.add_handler(CommandHandler('start', start))
 
 
@@ -181,10 +157,3 @@ def get_money_stuff_as_html(money_stuff) -> str:
 # updater.dispatcher.add_handler(MessageHandler(Filters.command, unknown))
 # Filters out unknown messages.
 # updater.dispatcher.add_handler(MessageHandler(Filters.text, unknown_text))
-
-
-def start_bot():
-    global app
-    app = ApplicationBuilder().token(config_service.get_telegram_confing().bot.api_token).build()
-    app.add_handler(CallbackQueryHandler(button))
-    app.run_polling()

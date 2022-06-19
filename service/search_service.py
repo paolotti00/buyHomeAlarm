@@ -8,7 +8,7 @@ from service.config_service import get_config
 from service.email_service import Mail, render_email_template
 from service.repository_service import Repository
 from service.scrape_service import scrape_data, get_only_the_new_homes
-from service import bot_telegram_service as bot_telegram
+from service import telegram_bot_conversation_service as bot_telegram
 
 emails_to_send = ["pa.tripodi@hotmail.it", "denisediprima@virgilio.it"]  # todo delete it
 
