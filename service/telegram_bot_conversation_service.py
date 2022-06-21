@@ -2,29 +2,11 @@ from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.constants import ParseMode
 from telegram.ext import CallbackContext, Updater, CallbackQueryHandler, ApplicationBuilder, ContextTypes
 
+from constant.constant_telegram_bot import SUP_BTN_KEY_MNY_STUFF_CALC_C_OFF
 from model.classes import Search, Button, UserConfig
 from model.search_home_classes import Home, MoneyStuff
-from service.cash_service import get_money_stuffs
+from service.cash_service import get_money_stuffs, do_money_stuffs_calculation_from_custom_offer
 from service.repository_service import Repository
-
-# updater = None
-
-
-# def start(update: Update, context: CallbackContext):
-#     update.message.reply_text("ciao Denise")
-#
-#
-# def help(update: Update, context: CallbackContext):
-#     update.message.reply_text("Your Message")
-#
-#
-# def unknown_text(update: Update, context: CallbackContext):
-#     update.message.reply_text("Sorry I can't recognize you , you said '%s'" % update.message.text)
-#
-#
-# def unknown(update: Update, context: CallbackContext):
-#     update.message.reply_text("Sorry '%s' is not a valid command" % update.message.text)
-
 
 # buttons callbacks
 from service.telegram_bot_service import send_text_with_buttons
@@ -40,17 +22,22 @@ async def do_money_stuff_calculation(query, parameters: str):
     await send_home(chat_telegram_id, False, home, None, money_stuff)
 
 
-supported_buttons = {
+supported_buttons_functions = {
     "money_stuff_calculations": do_money_stuff_calculation
-
 }
 
 
-def button(update: Update, context) -> None:
-    query = update.callback_query
-    button_pressed = query.data.split(':')[0]
-    parameters = query.data.split(':')[1]
-    return supported_buttons.get(button_pressed)(query, parameters)
+# conversation callbacks
+async def do_money_stuff_calculation_from_custom_offer(update, context: CallbackContext):
+    repository = Repository()
+    # todo move parameters in an dict to set on user_data
+    parameters = context.user_data.get(SUP_BTN_KEY_MNY_STUFF_CALC_C_OFF)
+    chat_telegram_id = parameters.split(",")[0]
+    home_id_from_site = parameters.split(",")[1]
+    user_offer = parameters.split(",")[2]
+    home = repository.get_home_by_id_from_site(home_id_from_site)[0]
+    money_stuff = do_money_stuffs_calculation_from_custom_offer(home, chat_telegram_id, user_offer)
+    await send_home(chat_telegram_id, False, home, None, money_stuff)
 
 
 # no callback functions:
@@ -148,12 +135,3 @@ def get_money_stuff_as_html(money_stuff) -> str:
             total_cash_left=money_stuff_case.total_cash_left
         )
     return to_return
-
-# updater.dispatcher.add_handler(CommandHandler('start', start))
-
-
-# updater.dispatcher.add_handler(MessageHandler(Filters.text, unknown))
-# Filters out unknown commands
-# updater.dispatcher.add_handler(MessageHandler(Filters.command, unknown))
-# Filters out unknown messages.
-# updater.dispatcher.add_handler(MessageHandler(Filters.text, unknown_text))

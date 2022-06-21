@@ -1,8 +1,25 @@
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import ApplicationBuilder
 
 from model.classes import Button
 from service import config_service
+from service.telegram_bot_conversation_service import supported_buttons_functions
+
+
+def get_func_by_conversation_trigger_button_pressed(update: Update, context) -> None:
+    query = update.callback_query
+    button_pressed = query.data.split(':')[0]
+    parameters = query.data.split(':')[1]
+    # track the start of the conversation
+    context.user_data['in_conversation'] = True
+    return supported_buttons_functions.get(button_pressed)(update, context, parameters)
+
+
+def get_func_by_normal_button_pressed(update: Update, context) -> None:
+    query = update.callback_query
+    button_pressed = query.data.split(':')[0]
+    parameters = query.data.split(':')[1]
+    return supported_buttons_functions.get(button_pressed)(update, context, parameters)
 
 
 async def send_text(chat_telegram_id, text, disable_notification: bool = False, parse_mode=None):
