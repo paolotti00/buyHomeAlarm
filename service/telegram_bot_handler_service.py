@@ -1,8 +1,14 @@
 from telegram import Update
-from telegram.ext import CallbackQueryHandler
+from telegram.ext import CallbackQueryHandler, CallbackContext
 
+from constant.constant_telegram_bot import IT_PHRASE_END_CONV, SUP_BTN_KEY_MNY_STUFF_CALC
+from service.telegram_bot_conversation_service import conv_handler, do_money_stuff_calculation
 from service.telegram_bot_service import get_func_by_conversation_trigger_button_pressed, \
-    get_func_by_normal_button_pressed, add_handler
+    get_func_by_normal_button_pressed, add_handler, end_conversation, cancel_conversation
+
+supported_buttons_functions = {
+    SUP_BTN_KEY_MNY_STUFF_CALC: do_money_stuff_calculation
+}
 
 
 def conversation_button_pressed_handler(update: Update, context) -> None:
@@ -11,6 +17,10 @@ def conversation_button_pressed_handler(update: Update, context) -> None:
 
 def normal_button_pressed_handler(update: Update, context) -> None:
     return get_func_by_normal_button_pressed(update, context)
+
+
+async def cancel_conversation_handler(update: Update, context: CallbackContext):
+    return cancel_conversation(Update, context)
 
 
 def initialize_handler():  # TODO

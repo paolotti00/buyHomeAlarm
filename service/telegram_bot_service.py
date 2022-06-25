@@ -1,9 +1,10 @@
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
-from telegram.ext import ApplicationBuilder
+from telegram.ext import ApplicationBuilder, ConversationHandler, CallbackContext
 
+from constant.constant_telegram_bot import IT_PHRASE_END_CONV
 from model.classes import Button
 from service import config_service
-from service.telegram_bot_conversation_service import supported_buttons_functions
+from service.telegram_bot_handler_service import supported_buttons_functions
 
 
 def get_func_by_conversation_trigger_button_pressed(update: Update, context) -> None:
@@ -22,11 +23,21 @@ def get_func_by_normal_button_pressed(update: Update, context) -> None:
     return supported_buttons_functions.get(button_pressed)(update, context, parameters)
 
 
+async def cancel_conversation(update: Update, context: CallbackContext):
+    await update.message.reply_text(IT_PHRASE_END_CONV + update.message.from_user.name)
+    await end_conversation(update, context)
+
+
 async def send_text(chat_telegram_id, text, disable_notification: bool = False, parse_mode=None):
     await app.bot.send_message(chat_id=chat_telegram_id,
                                text=text,
                                parse_mode=parse_mode if parse_mode is not None else None,
                                disable_notification=disable_notification)
+
+
+async def end_conversation(update, context: CallbackContext):
+    context.user_data['in_conversation'] = False
+    return ConversationHandler.END
 
 
 async def reply_to_message(update, msg_to_send):

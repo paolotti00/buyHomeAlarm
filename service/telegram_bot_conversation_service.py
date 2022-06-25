@@ -1,15 +1,17 @@
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.constants import ParseMode
-from telegram.ext import CallbackContext, Updater, CallbackQueryHandler, ApplicationBuilder, ContextTypes
+from telegram.ext import CallbackContext, CallbackQueryHandler, \
+    ConversationHandler, MessageHandler, filters, CommandHandler
 
-from constant.constant_telegram_bot import SUP_BTN_KEY_MNY_STUFF_CALC_C_OFF
+from constant.constant_telegram_bot import SUP_BTN_KEY_MNY_STUFF_CALC_C_OFFER, IT_PHRASE_ASK_PRICE, \
+    SUP_BTN_KEY_MNY_STUFF_CALC, IT_PHRASE_LOOK_IT, IT_PHRASE_DO_MORTGAGE_CALC, IT_PHRASE_DO_MORTGAGE_CALC_C_OFFER
 from model.classes import Search, Button, UserConfig
 from model.search_home_classes import Home, MoneyStuff
 from service.cash_service import get_money_stuffs, do_money_stuffs_calculation_from_custom_offer
 from service.repository_service import Repository
 
 # buttons callbacks
-from service.telegram_bot_service import send_text_with_buttons
+from service.telegram_bot_service import send_text_with_buttons, send_text, \
+    get_func_by_conversation_trigger_button_pressed, cancel_conversation
 
 
 async def do_money_stuff_calculation(query, parameters: str):
@@ -22,19 +24,38 @@ async def do_money_stuff_calculation(query, parameters: str):
     await send_home(chat_telegram_id, False, home, None, money_stuff)
 
 
-supported_buttons_functions = {
-    "money_stuff_calculations": do_money_stuff_calculation
-}
-
-
 # conversation callbacks
+# temp
+MNY_CALC_C_OFF_STEP_2 = range(1)
+conv_handler = ConversationHandler(
+    entry_points=[CallbackQueryHandler(get_func_by_conversation_trigger_button_pressed)],
+    states={
+        MNY_CALC_C_OFF_STEP_2: [
+            MessageHandler(filters.TEXT, MNY_CALC_C_OFF_STEP_2)]
+    },
+    fallbacks=[CommandHandler("stop", cancel_conversation)],
+    conversation_timeout=10
+)
+
+
+# temp
+
+
+async def ask_for_new_price(update, context: CallbackContext, parameters: str):
+    # send the request
+    await send_text(update.effective_chat.id, IT_PHRASE_ASK_PRICE)
+    context.user_data[SUP_BTN_KEY_MNY_STUFF_CALC] = parameters
+
+    return MNY_CALC_C_OFF_STEP_2
+
+
 async def do_money_stuff_calculation_from_custom_offer(update, context: CallbackContext):
     repository = Repository()
     # todo move parameters in an dict to set on user_data
-    parameters = context.user_data.get(SUP_BTN_KEY_MNY_STUFF_CALC_C_OFF)
+    parameters = context.user_data.get(SUP_BTN_KEY_MNY_STUFF_CALC_C_OFFER)
     chat_telegram_id = parameters.split(",")[0]
     home_id_from_site = parameters.split(",")[1]
-    user_offer = parameters.split(",")[2]
+    user_offer = update.message.text
     home = repository.get_home_by_id_from_site(home_id_from_site)[0]
     money_stuff = do_money_stuffs_calculation_from_custom_offer(home, chat_telegram_id, user_offer)
     await send_home(chat_telegram_id, False, home, None, money_stuff)
@@ -55,16 +76,23 @@ async def send_home(chat_telegram_id, disable_notification, home: Home, search: 
     buttons = []
     url_button: Button = Button()
     url_button.url = home.link_detail
-    url_button.text = "vai a vederlo!"
+    url_button.text = IT_PHRASE_LOOK_IT
     buttons.append(url_button)
 
     if money_stuff is None:
         # button mortgage
         button_mortgage_calculation: Button = Button()
-        button_mortgage_calculation.text = "fammi i calcoli"
-        button_mortgage_calculation.callback_function = "money_stuff_calculations"
+        button_mortgage_calculation.text = IT_PHRASE_DO_MORTGAGE_CALC
+        button_mortgage_calculation.callback_function = SUP_BTN_KEY_MNY_STUFF_CALC
         button_mortgage_calculation.parameters = chat_telegram_id + "," + home.id_from_site
         buttons.append(button_mortgage_calculation)
+    # button mortgage custom offer
+    button_mortgage_calculation_c_offer: Button = Button()
+    button_mortgage_calculation_c_offer.text = IT_PHRASE_DO_MORTGAGE_CALC_C_OFFER
+    button_mortgage_calculation_c_offer.callback_function = SUP_BTN_KEY_MNY_STUFF_CALC_C_OFFER
+    button_mortgage_calculation_c_offer.parameters = chat_telegram_id + "," + home.id_from_site
+    buttons.append(button_mortgage_calculation_c_offer)
+
     text_to_send = "<b>da: </b> {origin_site} | <b>ricerca:</b> {search_title} \n \n" + \
                    "<b>{title}</b> \n" + \
                    "<b>Descrizione: breve </b> {description_short} \n" + \
