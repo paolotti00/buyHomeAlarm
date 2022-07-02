@@ -15,7 +15,7 @@ from service.telegram_bot_service import send_text_with_buttons, send_text, \
     cancel_conversation
 
 
-async def do_money_stuff_calculation(query, parameters: str):
+async def do_money_stuff_calculation(update, context, parameters: str):
     # parameters
     repository = Repository()
     chat_telegram_id = parameters.split(",")[0]
