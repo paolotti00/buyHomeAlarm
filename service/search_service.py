@@ -8,7 +8,8 @@ from service.config_service import get_config
 from service.email_service import Mail, render_email_template
 from service.repository_service import Repository
 from service.scrape_service import scrape_data, get_only_the_new_homes
-from service import telegram_bot_conversation_service as bot_telegram
+from service import telegram_bot_service as bot_telegram
+from service.telegram_bot_conversation_service import send_home
 
 emails_to_send = ["pa.tripodi@hotmail.it", "denisediprima@virgilio.it"]  # todo delete it
 
@@ -44,14 +45,16 @@ async def send_results(research_to_send: [], n_homes: int, job: Job, action: Act
         if action.send_in_chat:
             chat: Chat = repository.get_chat(action.chat_id)
             logging.info("sending in chat with id %s", chat.telegram_id)
-            await bot_telegram.send_text("ho trovato {} case".format(n_homes), chat.telegram_id, False)
+            await bot_telegram.send_text(chat.telegram_id, "ho trovato {} case".format(n_homes), False)
             for research in research_to_send:
                 try:
-                    await bot_telegram.send_as_html(text="<b>Ricerca:</b>  {} \n <b>Descrizione:</b> {}".format(
+                    await bot_telegram.send_text(chat_telegram_id=chat.telegram_id, text="<b>Ricerca:</b>  {} \n "
+                                                                                         "<b>Descrizione:</b> {"
+                                                                                         "}".format(
                         research.title, research.description),
-                        chat_telegram_id=chat.telegram_id, disable_notification=True)
+                                                 disable_notification=True, parse_mode="HTML")
                     for home in research.homes:
-                        await bot_telegram.send_home(chat_telegram_id=chat.telegram_id, disable_notification=True,
+                        await send_home(chat_telegram_id=chat.telegram_id, disable_notification=True,
                                                      home=home,
                                                      search=research, money_stuff=None)
                         time.sleep(1)
@@ -63,8 +66,8 @@ async def send_results(research_to_send: [], n_homes: int, job: Job, action: Act
                     # todo check the skipped search - retry
                     continue
             logging.info("message sent correctly in chat %s", chat.telegram_id)
-            await bot_telegram.send_text("fine! rincotrollerò fra {} minuti <3".format(job.n_minutes_timer),
-                                         chat.telegram_id,
+            await bot_telegram.send_text(chat.telegram_id,
+                                         "fine! rincotrollerò fra {} minuti <3".format(job.n_minutes_timer),
                                          False)
         # save in db
         for research in research_to_send:
@@ -73,7 +76,7 @@ async def send_results(research_to_send: [], n_homes: int, job: Job, action: Act
         if action.send_in_chat:
             chat: Chat = repository.get_chat(action.chat_id)
             logging.info("sending msg in chat with id %s", chat.telegram_id)
-            await bot_telegram.send_text(
-                "Ciao ho controllato ma non ho trovato nessuna nuova casa - rincotrollerò fra {} minuti <3".format(
-                    job.n_minutes_timer), chat.telegram_id, True)
+            await bot_telegram.send_text(chat.telegram_id,
+                                         "Ciao ho controllato ma non ho trovato nessuna nuova casa - rincotrollerò fra {} minuti <3".format(
+                                             job.n_minutes_timer), True)
             logging.info("no new search with new result retrieved")

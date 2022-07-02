@@ -1,3 +1,4 @@
+from telegram import Update
 from telegram.constants import ParseMode
 from telegram.ext import CallbackContext, CallbackQueryHandler, \
     ConversationHandler, MessageHandler, filters, CommandHandler
@@ -11,7 +12,7 @@ from service.repository_service import Repository
 
 # buttons callbacks
 from service.telegram_bot_service import send_text_with_buttons, send_text, \
-    get_func_by_conversation_trigger_button_pressed, cancel_conversation
+    cancel_conversation
 
 
 async def do_money_stuff_calculation(query, parameters: str):
@@ -27,6 +28,20 @@ async def do_money_stuff_calculation(query, parameters: str):
 # conversation callbacks
 # temp
 MNY_CALC_C_OFF_STEP_2 = range(1)
+supported_buttons_functions = {
+    SUP_BTN_KEY_MNY_STUFF_CALC: do_money_stuff_calculation
+}
+
+
+def get_func_by_conversation_trigger_button_pressed(update: Update, context) -> None:
+    query = update.callback_query
+    button_pressed = query.data.split(':')[0]
+    parameters = query.data.split(':')[1]
+    # track the start of the conversation
+    context.user_data['in_conversation'] = True
+    return supported_buttons_functions.get(button_pressed)(update, context, parameters)
+
+
 conv_handler = ConversationHandler(
     entry_points=[CallbackQueryHandler(get_func_by_conversation_trigger_button_pressed)],
     states={
@@ -36,6 +51,13 @@ conv_handler = ConversationHandler(
     fallbacks=[CommandHandler("stop", cancel_conversation)],
     conversation_timeout=10
 )
+
+
+def get_func_by_normal_button_pressed(update: Update, context) -> None:
+    query = update.callback_query
+    button_pressed = query.data.split(':')[0]
+    parameters = query.data.split(':')[1]
+    return supported_buttons_functions.get(button_pressed)(update, context, parameters)
 
 
 # temp
