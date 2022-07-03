@@ -54,7 +54,7 @@ def do_money_stuffs_calculation_from_prices(prices: [Price], user_chat_config: U
     # money stuff cases
     money_stuff_cases = []
     for price in prices:
-        money_stuff_cases.append(do_money_stuffs_calculation_from_price(price, user_chat_config, money_stuff_cases))
+        money_stuff_cases = do_money_stuffs_calculation_from_price(price, user_chat_config, money_stuff_cases)
     return money_stuff_cases
 
 
