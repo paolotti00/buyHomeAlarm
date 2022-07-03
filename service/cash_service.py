@@ -82,11 +82,11 @@ def do_money_stuffs_calculation_from_custom_offer(home: Home, chat_telegram_id, 
     money_stuffs: MoneyStuff = get_money_stuffs(home, chat_telegram_id)
     # calculate the new one
     price = Price()
-    price.value = offer
+    price.value = int(offer)
     price.description = "custom_offer"
-    money_stuff_cases_to_add = do_money_stuffs_calculation_from_price(price, user_chat_config)
+    do_money_stuffs_calculation_from_price(price, user_chat_config, money_stuffs.cases)
     # add to old ones
-    money_stuffs.cases.append(money_stuff_cases_to_add)
+    #  money_stuffs.cases.append(money_stuff_cases_to_add)
     # save with new one case
     save_money_stuffs(home, chat_telegram_id, money_stuffs)
     return money_stuffs

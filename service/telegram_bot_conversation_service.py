@@ -14,6 +14,8 @@ from service.repository_service import Repository
 from service.telegram_bot_service import send_text_with_buttons, send_text, \
     cancel_conversation
 
+MNY_CALC_C_OFF_STEP_2 = range(1)
+
 
 async def do_money_stuff_calculation(update, context, parameters: str):
     # parameters
@@ -25,14 +27,6 @@ async def do_money_stuff_calculation(update, context, parameters: str):
     await send_home(chat_telegram_id, False, home, None, money_stuff)
 
 
-# conversation callbacks
-# temp
-MNY_CALC_C_OFF_STEP_2 = range(1)
-supported_buttons_functions = {
-    SUP_BTN_KEY_MNY_STUFF_CALC: do_money_stuff_calculation
-}
-
-
 def get_func_by_conversation_trigger_button_pressed(update: Update, context) -> None:
     query = update.callback_query
     button_pressed = query.data.split(':')[0]
@@ -40,17 +34,6 @@ def get_func_by_conversation_trigger_button_pressed(update: Update, context) -> 
     # track the start of the conversation
     context.user_data['in_conversation'] = True
     return supported_buttons_functions.get(button_pressed)(update, context, parameters)
-
-
-conv_handler = ConversationHandler(
-    entry_points=[CallbackQueryHandler(get_func_by_conversation_trigger_button_pressed)],
-    states={
-        MNY_CALC_C_OFF_STEP_2: [
-            MessageHandler(filters.TEXT, MNY_CALC_C_OFF_STEP_2)]
-    },
-    fallbacks=[CommandHandler("stop", cancel_conversation)],
-    conversation_timeout=10
-)
 
 
 def get_func_by_normal_button_pressed(update: Update, context) -> None:
@@ -66,7 +49,7 @@ def get_func_by_normal_button_pressed(update: Update, context) -> None:
 async def ask_for_new_price(update, context: CallbackContext, parameters: str):
     # send the request
     await send_text(update.effective_chat.id, IT_PHRASE_ASK_PRICE)
-    context.user_data[SUP_BTN_KEY_MNY_STUFF_CALC] = parameters
+    context.user_data[SUP_BTN_KEY_MNY_STUFF_CALC_C_OFFER] = parameters
 
     return MNY_CALC_C_OFF_STEP_2
 
@@ -82,6 +65,26 @@ async def do_money_stuff_calculation_from_custom_offer(update, context: Callback
     money_stuff = do_money_stuffs_calculation_from_custom_offer(home, chat_telegram_id, user_offer)
     await send_home(chat_telegram_id, False, home, None, money_stuff)
 
+
+conv_handler = ConversationHandler(
+    entry_points=[CallbackQueryHandler(get_func_by_conversation_trigger_button_pressed)],
+    states={
+        MNY_CALC_C_OFF_STEP_2: [
+            MessageHandler(filters.TEXT, do_money_stuff_calculation_from_custom_offer)]
+    },
+    fallbacks=[CommandHandler("stop", cancel_conversation)],
+    conversation_timeout=10
+)
+
+# conversation callbacks
+supported_buttons_functions = {
+    SUP_BTN_KEY_MNY_STUFF_CALC: do_money_stuff_calculation,
+    SUP_BTN_KEY_MNY_STUFF_CALC_C_OFFER: ask_for_new_price
+
+}
+
+
+# temp
 
 # no callback functions:
 

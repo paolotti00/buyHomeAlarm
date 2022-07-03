@@ -23,6 +23,6 @@ def initialize_handler():  # TODO
     # add_handler(CommandHandler("start", start_handler))
     # add_handler(CommandHandler("menu", send_menu_handler))
     # add_handler(CommandHandler("cancel", cancel_handler))
-    add_handler(CallbackQueryHandler(normal_button_pressed_handler))
+    # add_handler(CallbackQueryHandler(normal_button_pressed_handler))
     add_handler(conv_handler)
     return None
