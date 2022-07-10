@@ -3,6 +3,7 @@
 SUP_BTN_KEY_MNY_STUFF_CALC = "SBKMSC"
 # SUPPORTED BUTTON KEY MONEY STUFF CALC CUSTOM OFFER
 SUP_BTN_KEY_MNY_STUFF_CALC_C_OFFER = "SBKMSCCO"
+IN_CONVERSATION = "in_conversation"
 
 # phrases
 IT_PHRASE_ASK_PRICE = "Perfetto , dimmi il prezzo sui fare i calcoli. o dimmi /stop"

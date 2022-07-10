@@ -4,7 +4,8 @@ from telegram.ext import CallbackContext, CallbackQueryHandler, \
     ConversationHandler, MessageHandler, filters, CommandHandler
 
 from constant.constant_telegram_bot import SUP_BTN_KEY_MNY_STUFF_CALC_C_OFFER, IT_PHRASE_ASK_PRICE, \
-    SUP_BTN_KEY_MNY_STUFF_CALC, IT_PHRASE_LOOK_IT, IT_PHRASE_DO_MORTGAGE_CALC, IT_PHRASE_DO_MORTGAGE_CALC_C_OFFER
+    SUP_BTN_KEY_MNY_STUFF_CALC, IT_PHRASE_LOOK_IT, IT_PHRASE_DO_MORTGAGE_CALC, IT_PHRASE_DO_MORTGAGE_CALC_C_OFFER, \
+    IN_CONVERSATION
 from model.classes import Search, Button, UserConfig
 from model.search_home_classes import Home, MoneyStuff
 from service.cash_service import get_money_stuffs, do_money_stuffs_calculation_from_custom_offer
@@ -31,8 +32,6 @@ def get_func_by_conversation_trigger_button_pressed(update: Update, context) -> 
     query = update.callback_query
     button_pressed = query.data.split(':')[0]
     parameters = query.data.split(':')[1]
-    # track the start of the conversation
-    context.user_data['in_conversation'] = True
     return supported_buttons_functions.get(button_pressed)(update, context, parameters)
 
 
@@ -48,9 +47,10 @@ def get_func_by_normal_button_pressed(update: Update, context) -> None:
 
 async def ask_for_new_price(update, context: CallbackContext, parameters: str):
     # send the request
+    # track the start of the conversation
     await send_text(update.effective_chat.id, IT_PHRASE_ASK_PRICE)
+    context.user_data[IN_CONVERSATION] = True
     context.user_data[SUP_BTN_KEY_MNY_STUFF_CALC_C_OFFER] = parameters
-
     return MNY_CALC_C_OFF_STEP_2
 
 

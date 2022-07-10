@@ -1,13 +1,13 @@
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import ApplicationBuilder, ConversationHandler, CallbackContext
 
-from constant.constant_telegram_bot import IT_PHRASE_END_CONV
+from constant.constant_telegram_bot import IT_PHRASE_END_CONV, IN_CONVERSATION
 from model.classes import Button
 from service import config_service
 
 
 async def cancel_conversation(update: Update, context: CallbackContext):
-    await update.message.reply_text(IT_PHRASE_END_CONV + update.message.from_user.name)
+    await update.message.reply_text(IT_PHRASE_END_CONV + " " + update.message.from_user.name)
     await end_conversation(update, context)
 
 
@@ -19,7 +19,7 @@ async def send_text(chat_telegram_id, text, disable_notification: bool = False, 
 
 
 async def end_conversation(update, context: CallbackContext):
-    context.user_data['in_conversation'] = False
+    context.user_data[IN_CONVERSATION] = False
     return ConversationHandler.END
 
 

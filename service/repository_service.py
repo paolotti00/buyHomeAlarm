@@ -92,7 +92,7 @@ class Repository:
     def get_money_stuff_by_home_id_from_site_and_chat_telegram_id(self, home_id_from_site,
                                                                   chat_telegram_id) -> MoneyStuff:
         result = self.home_money_stuff_collection.find_one(
-            {'chat_id': chat_telegram_id, 'homeReference.home_id_from_site': home_id_from_site})
+            {'telegram_chat_id': chat_telegram_id, 'home_reference.home_id_from_site': home_id_from_site})
         return from_dict_to_object(result)
 
     def save_money_stuff(self, money_stuff: MoneyStuff):
