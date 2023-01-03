@@ -1,5 +1,8 @@
+import logging
+
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.constants import ParseMode
+from telegram.error import BadRequest
 from telegram.ext import CallbackContext, Updater, CallbackQueryHandler, ApplicationBuilder, ContextTypes
 
 from model.classes import Search, Button, UserConfig
@@ -48,9 +51,13 @@ async def send_as_html_with_buttons(chat_telegram_id, text, disable_notification
                                                           url=received_button.url if received_button.url is not None else None)
             inline_keyboard_buttons.append(inline_keyboard_button)
         keyboard_elements = [[element] for element in inline_keyboard_buttons]
-    await app.bot.send_message(chat_id=chat_telegram_id, parse_mode=ParseMode.HTML, text=text,
-                               disable_notification=disable_notification,
-                               reply_markup=InlineKeyboardMarkup(inline_keyboard=keyboard_elements))
+    try:
+        await app.bot.send_message(chat_id=chat_telegram_id, parse_mode=ParseMode.HTML, text=text,
+                                   disable_notification=disable_notification,
+                                   reply_markup=InlineKeyboardMarkup(inline_keyboard=keyboard_elements))
+    except BadRequest:
+        logging.warning("we received bad request we try to send without button : " + text)
+        await send_as_html(chat_telegram_id, text, disable_notification)
 
 
 # buttons callbacks
@@ -132,6 +139,7 @@ async def send_home(chat_telegram_id, disable_notification, home: Home, search: 
                                        date=home.date,
                                        description=home.description,
                                        link_detail=home.link_detail)
+
     await send_as_html_with_buttons(chat_telegram_id, disable_notification=disable_notification, text=text_to_send,
                                     buttons=buttons)
 
